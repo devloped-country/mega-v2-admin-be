@@ -1,0 +1,85 @@
+{
+  "taskDefinitionArn": "arn:aws:ecs:ap-northeast-3:503237308475:task-definition/bsdev08-taskDefinition-family-admin:35",
+  "containerDefinitions": [
+    {
+      "name": "bsdev08-container-admin",
+      "image": "503237308475.dkr.ecr.ap-northeast-3.amazonaws.com/bsdev08-admin:latest",
+      "cpu": 0,
+      "portMappings": [
+        {
+          "name": "bsdev08-container-admin-8080-tcp",
+          "containerPort": 8080,
+          "hostPort": 8080,
+          "protocol": "tcp",
+          "appProtocol": "http"
+        }
+      ],
+      "essential": true,
+      "environment": [],
+      "mountPoints": [],
+      "volumesFrom": [],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-create-group": "true",
+          "awslogs-group": "/ecs/bsdev08-taskDefinition-family-admin",
+          "awslogs-region": "ap-northeast-3",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ],
+  "family": "bsdev08-taskDefinition-family-admin",
+  "taskRoleArn": "arn:aws:iam::503237308475:role/bsdev08-role-for-ECS-task",
+  "executionRoleArn": "arn:aws:iam::503237308475:role/ecsTaskExecutionRole",
+  "networkMode": "awsvpc",
+  "revision": 35,
+  "volumes": [],
+  "status": "ACTIVE",
+  "requiresAttributes": [
+    {
+      "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+    },
+    {
+      "name": "ecs.capability.execution-role-awslogs"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.ecr-auth"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.task-iam-role"
+    },
+    {
+      "name": "ecs.capability.execution-role-ecr-pull"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+    },
+    {
+      "name": "ecs.capability.task-eni"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
+    }
+  ],
+  "placementConstraints": [],
+  "compatibilities": ["EC2", "FARGATE"],
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "1024",
+  "memory": "3072",
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  },
+  "registeredAt": "2023-11-27T15:20:21.769Z",
+  "registeredBy": "arn:aws:iam::503237308475:user/BSDEV07",
+  "tags": [
+    {
+      "key": "owner",
+      "value": "d07"
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.app.mega.mapper.DashboardMapper">
+  <select id="findAllUserTodayAttendanceByCourseId" resultType="com.app.mega.dto.response.DashboardResponse">
+    SELECT
+      name as userName,
+      phone as userPhone,
+      attendance_date as attendanceDate,
+      start_time as attnendanceStartTime,
+      end_time as attnendanceEndTime,
+      attendance.status as attendanceStatus,
+      appliance.status as applianceStatus,
+      appliance.time as applianceTime,
+      user.course_id as userCourseId
+    FROM user
+      INNER JOIN attendance on user.id = attendance.user_id
+      LEFT OUTER JOIN appliance on user.id = appliance.user_id AND attendance.id = appliance.attendance_id
+    WHERE user.course_id = #{id} AND attendance_date = CURRENT_DATE
+  </select>
+
+  <select id="findStatsTodayAttendanceByCourseId" resultType="com.app.mega.dto.response.DashboardResponse">
+    SELECT
+      name as userName,
+      phone as userPhone,
+      attendance_date as attendanceDate,
+      start_time as attnendanceStartTime,
+      end_time as attnendanceEndTime,
+      attendance.status as attendanceStatus,
+      user.course_id as userCourseId
+    FROM user
+           INNER JOIN attendance on user.id = attendance.user_id
+    WHERE user.course_id = #{id} AND attendance_date = CURRENT_DATE
+    GROUP BY attendanceStatus
+  </select>
+
+  <select id="findThisWeekAttendanceCountByCourseId" resultType="com.app.mega.dto.response.DashboardResponse">
+    SELECT
+      attendance_date as attendanceDate,
+      attendance.status as attendanceStatus,
+      COUNT(*) as count
+    FROM user
+           INNER JOIN attendance ON user.id = attendance.user_id
+           LEFT OUTER JOIN appliance ON user.id = appliance.user_id AND attendance.id = appliance.attendance_id
+    WHERE attendance_date BETWEEN CURDATE() - INTERVAL WEEKDAY(CURDATE()) DAY
+      AND CURDATE() + INTERVAL (4 - WEEKDAY(CURDATE())) DAY
+    GROUP BY attendanceDate, attendanceStatus
+    HAVING attendanceStatus = 1;
+  </select>
+
+  <select id="findThisWeekLateCountByCourseId" resultType="com.app.mega.dto.response.DashboardResponse">
+    SELECT
+      attendance_date as attendanceDate,
+      attendance.status as attendanceStatus,
+      COUNT(*) as count
+    FROM user
+           INNER JOIN attendance ON user.id = attendance.user_id
+           LEFT OUTER JOIN appliance ON user.id = appliance.user_id AND attendance.id = appliance.attendance_id
+    WHERE attendance_date BETWEEN CURDATE() - INTERVAL WEEKDAY(CURDATE()) DAY
+      AND CURDATE() + INTERVAL (4 - WEEKDAY(CURDATE())) DAY
+    GROUP BY attendanceDate, attendanceStatus
+    HAVING attendanceStatus = 2;
+  </select>
+</mapper>

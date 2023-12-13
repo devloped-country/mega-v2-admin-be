@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.app.mega.mapper.AttendanceMapper">
+
+    <update id="saveChangeAttendanceStatus">
+        UPDATE attendance
+        SET status = #{changeStatus}
+        WHERE user_id = #{userId}
+    </update>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~승인 미승인부분~~~~~~~~~~~~~~~~~ -->
+    <update id="AttendanceAllowChangeYes">
+        UPDATE attendance
+        SET status = #{status}
+        WHERE id = #{attendanceId}
+    </update>
+    <update id="ApplianceAllowChangeYse">
+        UPDATE appliance
+        SET status_change_allow = 1
+        WHERE attendance_id = #{attendanceId}
+    </update>
+    <update id="AttendanceChangeNoRequest">
+        UPDATE appliance
+        SET status_change_allow = 2
+        WHERE attendance_id = #{attendanceId}
+    </update>
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~승인 미승인부분~~~~~~~~~~~~~~~~~ -->
+    <select id="getUserList" resultType="com.app.mega.dto.response.UserResponse">
+        SELECT id, name, email, password, phone, is_identified FROM user
+    </select>
+    <select id="getAttendanceListByUserIdAndMonth" resultType="com.app.mega.dto.response.AttendanceResponse">
+        SELECT
+            id,
+            DATE_FORMAT(start_time, '%Y-%m-%d %H:%i:%s') AS start_time,
+            DATE_FORMAT(end_time, '%Y-%m-%d %H:%i:%s') AS end_time,
+            status,
+            DATE_FORMAT(attendance_date, '%Y-%m-%d') AS attendance_date
+        FROM attendance
+        WHERE user_id = #{userId}
+                  AND MONTH(attendance_date) = #{month}
+    </select>
+
+    <select id="getAttendanceListByUserId" resultType="com.app.mega.dto.response.AttendanceResponse">
+        SELECT
+              id
+             ,DATE_FORMAT(start_time, '%Y-%m-%d %H:%i:%s')
+             ,DATE_FORMAT(end_time, '%Y-%m-%d %H:%i:%s')
+             ,status
+             ,DATE_FORMAT(attendance_date, '%Y-%m-%d')
+        FROM attendance
+        WHERE user_id = #{userId}
+    </select>
+
+    <insert id="saveAttendance" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO attendance (user_id, start_time, end_time, status, attendance_date)
+        VALUES (#{id}, #{startTime}, #{endTime}, #{status}, #{attendanceDate})
+    </insert>
+
+    <select id="getApplianceStatus" resultType="java.lang.Long">
+        SELECT status FROM appliance WHERE id = #{id} AND date_column = #{date}
+    </select>
+
+    <select id="getAttendanceId" resultType="java.lang.Long" parameterType="map">
+        SELECT id
+        FROM attendance
+        WHERE user_id = #{id} AND DATE(attendance_date) = #{date}
+    </select>
+
+    <insert id="createApplianceForAttendance" useGeneratedKeys="false">
+        INSERT INTO appliance (user_id,reason,time,status,attendance_id)
+        VALUES (#{id},#{applianceRequest.reason},#{applianceRequest.applianceDate},#{applianceRequest.status},#{attendanceId})
+    </insert>
+
+    <select id="getApplianceById" resultType="java.lang.Long" parameterType="map">
+        SELECT id
+        FROM attendance
+        WHERE user_id = #{id} AND DATE(attendance_date_date) = #{date}
+    </select>
+    <select id="getStatus" resultType="com.app.mega.dto.response.ApplianceResponse">
+        Select("SELECT id FROM appliance WHERE id = #{id}")
+                  Long getIdById(@Param("id") Long id);
+--             applianceStatus의 id만 가져오는 SQL
+    </select>
+
+    <select id="attendanceList" resultType="com.app.mega.dto.response.AttendanceResponse">
+        SELECT * FROM attendance
+    </select>
+    <select id="getAttendanceResponse" resultType="com.app.mega.dto.response.AttendanceResponse" parameterType="Long">
+        SELECT user_id, start_time, end_time, status, attendance_date
+        FROM attendance
+        WHERE user_id = #{attendanceId}
+    </select>
+
+    <select id="getUserInfo" resultType="com.app.mega.dto.response.UserResponse">
+        SELECT id ,name ,email ,password, phone, is_identified
+        FROM user
+        WHERE id = #{id}
+    </select>
+
+    <insert id="getAttendanceByIdAndTime" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO attendance (reason, userId, date, status) VALUES (#{dto.userId}, #{dto.date}, #{dto.status})
+    </insert>
+
+    <select id="getAppliancesById" resultType="com.app.mega.dto.response.ApplianceResponse" parameterType="long">
+        SELECT *
+        FROM appliance
+        WHERE user_id = #{id}
+    </select>
+
+    <update id="updateAttendance">
+        UPDATE attendance SET userId = #{attendanceResponse.userId}, date = #{attendanceResponse.date}, status = #{attendanceResponse.status}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteAttendance">
+        DELETE FROM attendance WHERE id = #{id}
+    </delete>
+    <insert id="create" useGeneratedKeys="true" keyProperty="id">
+        <!-- Adjust column names as per your Appliance table structure -->
+        INSERT INTO appliance (reason, date, status, attendance_id)
+        VALUES (#{dto.property1}, #{dto.property2}, #{dto.property3}, #{dto.attendance.id})    </insert>
+
+
+    <update id="attendanceChangegAllow">
+        UPDATE attendance SET status = #{changStatus}
+        WHERE id = #{attendanceResponse.id}
+    </update>
+
+</mapper>

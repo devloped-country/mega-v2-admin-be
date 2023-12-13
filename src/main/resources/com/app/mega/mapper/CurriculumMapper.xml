@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.app.mega.mapper.CurriculumMapper">
+    <!--    조회 확인용-->
+    <resultMap id="findContent" type="com.app.mega.dto.response.CurriculumResponse">
+        <id property="curriculum_id" column="id"/>
+        <result property="subject" column="subject"/>
+        <result property="time" column="time"/>
+        <result property="startDate" column="start_date"/>
+        <result property="endDate" column="end_date"/>
+        <collection property="contentList" column="curriculum_id = id" ofType="CurriculumResponse"
+                    select="findAllContent"/>
+    </resultMap>
+    <select id="findAllContent" resultType="com.app.mega.dto.response.CurriculumResponse">
+        SELECT detail_subject.content
+        FROM course
+                 INNER JOIN curriculum ON course.id = curriculum.course_id
+                 INNER JOIN detail_subject ON curriculum.id = detail_subject.curriculum_id
+        WHERE course.id = #{course_id}
+          AND curriculum.id = #{curriculum_id}
+    </select>
+    <select id="findAllCurriculum" resultType="com.app.mega.dto.response.CurriculumResponse" resultMap="findContent">
+        SELECT curriculum.*, course.id
+        FROM course
+                 INNER JOIN curriculum ON course.id = curriculum.course_id
+                 INNER JOIN detail_subject ON curriculum.id = detail_subject.curriculum_id
+        WHERE course.id = #{course_id}
+    </select>
+
+
+    <select id="findCurriculum" resultType="com.app.mega.dto.response.CurriculumResponse">
+        SELECT curriculum.*, detail_subject.content
+        FROM curriculum
+                 INNER JOIN detail_subject on curriculum_id = curriculum.id
+        WHERE curriculum.id = #{curriculum_id};
+    </select>
+
+
+    <update id="updateCurriculum">
+        UPDATE curriculum
+        SET curriculum.subject    = #{subject},
+            curriculum.time       = #{time},
+            curriculum.start_date = #{startDate},
+            curriculum.end_date   = #{endDate}
+        WHERE curriculum.id = #{id};
+    </update>
+    <delete id="deleteDetailSubject">
+        DELETE
+        FROM detail_subject
+        where curriculum_id = #{id};
+    </delete>
+
+    <insert id="insertDetailSubject">
+        INSERT INTO detail_subject (curriculum_id, content)
+        VALUES
+        <foreach collection="contents" item="content" separator=",">
+            (#{id}, #{content})
+        </foreach>
+    </insert>
+
+    <delete id="deleteCurriculum" >
+
+    </delete>
+
+</mapper>
