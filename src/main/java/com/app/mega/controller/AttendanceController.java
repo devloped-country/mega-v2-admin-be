@@ -4,6 +4,7 @@ import com.app.mega.dto.request.*;
 import com.app.mega.dto.response.*;
 import com.app.mega.entity.Admin;
 import com.app.mega.entity.Attendance;
+import com.app.mega.entity.Course;
 import com.app.mega.entity.User;
 import com.app.mega.repository.AttendanceRepository;
 import com.app.mega.service.mybatis.AttendanceService;
@@ -24,6 +25,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -43,21 +45,33 @@ public class AttendanceController {
 
         private final AttendanceService attendanceService;
         private final UserService userService;
+//-------------------------------------------------------
 
-
-        @Scheduled(cron = "0 0 0 * * ?") //매일밤12시에 기본 attendance만들어지게
-        public void createDailyAttendanceForAllUsers() {
-
-                List<UserResponse> userList = attendanceService.getUserList();
-
-                for (UserResponse user : userList) {
-                        //객체를       변수명   리스트에있는
-                        System.out.println(user);
-                        LocalDate currentDate = LocalDate.now();
-                        AttendanceRequest attendanceRequest = new AttendanceRequest(user.getId(), null, null, 2, currentDate);
-                        attendanceService.saveAttendance(attendanceRequest);
-                }
-        }
+//원래 사용중 1일 한번
+//
+//        private LocalDateTime currentDateTime = LocalDateTime.now(); // currentDate를 클래스 필드로 선언
+//        private LocalDate currentDate= LocalDate.now();
+//
+//        @Scheduled(cron = "0/9 * * * * ?") // 매 5초마다 실행
+//        public void createDailyAttendanceForAllUsers() {
+//                // currentDate를 1일씩 증가
+//                currentDateTime = currentDateTime.plusDays(-1).with(LocalTime.of(0, 0, 0));;
+//                currentDate = currentDate.plusDays(-1);
+//
+//
+//                //0이면 오늘 지금
+//                //+1이면 다음낳부터 1+
+//
+//                List<UserResponse> userList = attendanceService.getUserList();
+//
+//                for (UserResponse user : userList) {
+//                        System.out.println(user);
+//                        AttendanceRequest attendanceRequest = new AttendanceRequest(user.getId(),currentDateTime, currentDateTime, 2, currentDate);
+//                        attendanceService.saveAttendance(attendanceRequest);
+//                }
+//
+//        }
+//-------------------------------------------------------
 //--------------------------------------------------------------------
 //[ 0미출,1출석,2지각,3결석,4공결 ]
 //    start_time이 9:00이전이라면 status->1
@@ -100,26 +114,34 @@ public class AttendanceController {
 
         //✅✅[과정명,번호 가져오기]
         @GetMapping("/getCourse")
-        public List<CourseResponse> getCourse() {
+        public List<CourseResponse> getCourse(@AuthenticationPrincipal Admin admin ) {
+
+
                 return attendanceService.getCourse();
         }
+        //=>admin , 기관ID에 맞는 교육과정들 가져옴
 
 //-------------------------------------------------------------------
-        //✅✅[[유저전체의 개인정보들(유저번호,이름,프로필) ]]
+        //✅✅[[해당 교육과정 => 유저전체의 개인정보들(유저번호,이름,프로필) ]]
 
         //-> id.name,imageUrl,phone
-        @GetMapping("/getUserListByCourse")
-        public List<UserResponse> getUserListByCourse(@RequestBody CourseRequest course) {
-                return attendanceService.getUserListByCourse(course.getId());
-        }
+//        @GetMapping("/getUserListByCourse")
+//        public List<UserResponse> getUserListByCourse
+//        (@AuthenticationPrincipal Admin admin) {
+//                return attendanceService.getUserListByCourse(admin.getInstitution());
+//        }
+
+        @GetMapping("/{courseId}/getUserListByCourse")
+        public List<UserResponse> getUserListByCourse(@PathVariable Long courseId)
+        {return attendanceService.getUserListByCourse(courseId);}
 //-------------------------------------------------------------------
 
         //    [[유저전체의 출석+프로필정보(유저번호,이름,프로필,출석정보)들 가져오기
 //     ✅✅하고 +로 각출석상태 총합까지 만들어서 반환하기]]
-        @GetMapping("/total")  //total
+        @GetMapping("/{courseId}/total")  //total
 
-        public List<AttendanceProfileSum> attendanceList( @RequestBody CourseRequest course) {
-                List<UserResponse> userList = attendanceService.getUserListByCourse(course.getId());
+        public List<AttendanceProfileSum> attendanceList(@PathVariable Long courseId) {
+                List<UserResponse> userList = attendanceService.getUserListByCourse(courseId);
 
                 List<AttendanceProfileSum> profileSumList = new ArrayList<>();
                 for (UserResponse userResponse : userList) {
@@ -180,9 +202,20 @@ public class AttendanceController {
 //        return attendanceService.print();
 //    }
 
+///=============================================================================
 
+        //✅✅
+        @GetMapping("/{id}/getAppliancesById")
+        public List<ApplianceResponse> getAppliancesById(@PathVariable("id") Long id) {
+                //return AttendanceRepository.findById(id).orElse(null);
+                //return (List<ApplianceResponse>) attendanceService.getAppliancesById(id);
+                return attendanceService.getAppliancesById(id);
+        }
+
+///=============================================================================
         // [[교육생의 신청허가에따른 status반영]]
         //  [[승인버튼 누르면 일어나는 허가 과정]]
+        //바로위 getAppliancesById 의 공가신청 목록중에서 선택한 항목의 데이터를 요청에 담아서
 
         //✅✅승인버튼누를시\\
         @PutMapping("/AttendanceChangeYesRequest")
@@ -197,6 +230,7 @@ public class AttendanceController {
                 //ㄴ>외래키두게인 유저아이디랑 출석아이디로 공가신청칼럼찾고 그걸 고정값 변경
                 attendanceService.ApplianceAllowChangeYse(attendanceChangeYesRequest.getAttendanceId(),admin.getId());
         }
+
         //✅✅미승인버튼누를시\\
         @PutMapping("/AttendanceChangeNoRequest")
         public void AttendanceChangeNoRequest(
@@ -205,7 +239,7 @@ public class AttendanceController {
                 attendanceService.AttendanceChangeNoRequest
                         (attendanceChangeNoRequest.getAttendanceId(),admin.getId());
         }
-
+///=============================================================================
         //    @GetMapping("/{id}/appliance")
 //    public ApplianceResponse viewApplianceForAttendance(@PathVariable("id") @Valid Long id) {
 //        //유저id, applianceRequest->(reason,applianceDate,status)//유저8번으로 테스트
@@ -227,7 +261,7 @@ public class AttendanceController {
 //                attendanceService.createApplianceForAttendance(admin.getId(), applianceRequest, attendanceId);
 //
 //        }
-
+///=============================================================================
         //            [[유저한명의 정보들 중 '일정페이지'
         //            (프로필,공가신청내역(날짜,원하는상태등등))들 가져오기]]
         //===========????   승인,대기중,미승인 상태표시 어캐  ????==========
@@ -238,6 +272,7 @@ public class AttendanceController {
 //         //return (List<ApplianceResponse>) attendanceService.getAppliancesById(id);
 //        return attendanceService.getAppliancesById(id);
 //    }
+///=============================================================================
         //✅✅
         //            [[유저한명의 정보들 중 '정보'
         //            (...)들 가져오기]]
@@ -248,18 +283,12 @@ public class AttendanceController {
                 // => 리퍼지터리와 컨트롤러가 만날일 없이 서비스가 조회 요청을 처리하도록 수정
                 return attendanceService.getUserInfo(id);
         }
+//=============================================================================
         //✅✅
         @GetMapping("/{id}/attendance")
         public List<AttendanceResponse> getAttendanceById(@PathVariable("id") Long id) {
                 return attendanceService.getAttendanceById(id);
         }
 
-        //✅✅
-        @GetMapping("/{id}/getAppliancesById")
-        public List<ApplianceResponse> getAppliancesById(@PathVariable("id") Long id) {
-                //return AttendanceRepository.findById(id).orElse(null);
-                //return (List<ApplianceResponse>) attendanceService.getAppliancesById(id);
-                return attendanceService.getAppliancesById(id);
-        }
 
 }

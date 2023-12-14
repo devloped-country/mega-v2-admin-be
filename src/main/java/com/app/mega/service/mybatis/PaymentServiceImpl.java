@@ -58,8 +58,10 @@ public class PaymentServiceImpl implements PaymentService {
 //            throw new CustomLogicException(ExceptionCode.INVALID_PAYMENT_AMOUNT);
 //        }
         payment.setUser(user.toEntity());
+        System.out.println("여기가 출력된다면 save 문제");
         return paymentRepository.save(payment);
     }
+    ////////////////////!!!!!!!!!!!!!!!///////////////////
     public PaymentSuccessDto tossPaymentSuccess(String paymentKey, String orderId, Long amount) {
         PaymentSuccessDto successDto = new PaymentSuccessDto();
         successDto.setPaymentKey(paymentKey);

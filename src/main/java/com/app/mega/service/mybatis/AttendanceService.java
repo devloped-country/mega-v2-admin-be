@@ -7,7 +7,11 @@ import com.app.mega.dto.request.CourseRequest;
 import com.app.mega.dto.response.*;
 import com.app.mega.dto.request.ApplianceRequest;
 import com.app.mega.entity.Attendance;
+import com.app.mega.entity.Course;
+import com.app.mega.entity.Institution;
+import com.app.mega.entity.User;
 import com.app.mega.mapper.AttendanceMapper;
+import com.app.mega.repository.CourseRepository;
 import com.app.mega.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,15 +21,20 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class AttendanceService {
 
+    private final UserRepository userRepository;
     private final AttendanceMapper attendanceMapper;
-    public AttendanceService(AttendanceMapper attendanceMapper) {
-        this.attendanceMapper = attendanceMapper;
-    }
+//    public AttendanceService(AttendanceMapper attendanceMapper) {
+//        this.attendanceMapper = attendanceMapper;
+//    }
 
     public UserResponse getUserInfo(Long id){
         return attendanceMapper.getUserInfo(id);}
@@ -143,6 +152,28 @@ public class AttendanceService {
     public List<UserResponse> getUserListByCourse(Long courseId) {
         return attendanceMapper.getUserListByCourse(courseId);
     }
+
+//    public Map<Long, List<UserResponse>>  getUserListByCourse(Institution institution) {
+//        Map<Long, List<UserResponse>> userListByCourse = new HashMap<>();
+//        List<UserResponse> userResponseList = new ArrayList<>();
+//        List<Course> courseList = institution.getCourseList();
+//        for(Course course : courseList) {
+//            List<User> userList = userRepository.findAllByCourse(course);
+//            for(User user : userList) {
+//                UserResponse userResponse = UserResponse.builder()
+//                        .id(user.getId())
+//                        .name(user.getName())
+//                        .email(user.getEmail())
+//                        .phone(user.getPhone())
+//                        .isSigned(user.getIsIdentified())
+//                        .build();
+//                userResponseList.add(userResponse);
+//            }
+//            userListByCourse.put(course.getId(), userResponseList);
+//        }
+//        return userListByCourse;
+//    }
+
     public List<UserResponse> getUserListById(Long id) {
         return attendanceMapper.getUserListById(id);
     }
