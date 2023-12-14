@@ -28,7 +28,7 @@ public class QrController {
   }
 
   @GetMapping("/{qr}")
-  public ResponseEntity<CommonResponse<Boolean>> readQr(@PathVariable("qr") String qr) {
+    public ResponseEntity<CommonResponse<Boolean>> readQr(@PathVariable("qr") String qr) {
     if (awsDynamoDbService.readQr().equals(qr)) {
       return ResponseEntity.status(HttpStatus.OK).body(
           CommonResponse.<Boolean>builder().responseCode(1).responseMessage("성공")
