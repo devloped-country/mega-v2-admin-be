@@ -49,7 +49,7 @@ public class UserController {
     public ResponseEntity<CommonResponse<Boolean>> getLocation(@RequestBody
         LocationRequest locationRequest) {
         Boolean isCorrectLocation = userServiceJpa.findInstitutionIdByEmail(locationRequest);
-
+        System.out.println(locationRequest);
         if(isCorrectLocation) {
             return ResponseEntity.status(HttpStatus.OK).body(
                 CommonResponse.<Boolean>builder().responseCode(1).responseMessage("성공")
