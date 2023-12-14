@@ -33,12 +33,12 @@ public class NoticeController {
     this.noticeService = noticeService;
   }
 
-  @GetMapping
-  public ResponseEntity<CommonResponse<Page<NoticeResponse>>> readNotices(Pageable pageable) {
+  @GetMapping("/notices/{id}")
+  public ResponseEntity<CommonResponse<Page<NoticeResponse>>> readNotices(@PathVariable("id") Long courseId, Pageable pageable) {
     Page<NoticeResponse> noticeResponse = null;
-    System.out.println(noticeResponse);
+
     try {
-      noticeResponse = noticeService.readNotices(pageable);
+      noticeResponse = noticeService.readNotices(pageable, courseId);
     } catch (Exception e) {
       return ResponseEntity.status(HttpStatus.OK).body(
           CommonResponse.<Page<NoticeResponse>>builder().responseCode(-1).responseMessage("에러")
@@ -67,9 +67,9 @@ public class NoticeController {
             .data(noticeResponse).build());
   }
 
-  @PostMapping
+  @PostMapping("/{id}")
   public CommonResponse createNotice(@Valid @RequestBody NoticeRequest noticeRequest,
-      BindingResult bindingResult) {
+      BindingResult bindingResult, @PathVariable("id") Long courseId) {
     if (bindingResult.hasErrors()) {
       Map<String, String> errorMap = new HashMap<>();
       for (FieldError error : bindingResult.getFieldErrors()) {
@@ -77,7 +77,7 @@ public class NoticeController {
       }
       throw new CustomValidationApiException("유효성검사 실패함", errorMap);
     } else {
-      noticeService.createNotice(noticeRequest);
+      noticeService.createNotice(noticeRequest, courseId);
       return new CommonResponse<>(1, "공지글 등록 성공");
     }
   }

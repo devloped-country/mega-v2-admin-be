@@ -1,5 +1,6 @@
 package com.app.mega.dto.request;
 
+import com.app.mega.entity.Course;
 import com.app.mega.entity.Notice;
 import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ import lombok.ToString;
 @ToString
 public class NoticeRequest {
   private Long id;
+  private Long courseId;
   @NotBlank(message = "제목은 필수 입력 값입니다.")
   private String title;
   @NotBlank(message = "내용은 필수 입력 값입니다.")
@@ -26,9 +28,10 @@ public class NoticeRequest {
   private LocalDateTime createdTime;
   private String thumbnail;
 
-  public Notice toEntity() {
+  public Notice toEntity(Course course) {
     return Notice.builder()
         .id(id)
+        .course(course)
         .title(title)
         .content(content)
         .textContent(textContent)

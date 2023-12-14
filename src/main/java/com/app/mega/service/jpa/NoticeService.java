@@ -3,8 +3,10 @@ package com.app.mega.service.jpa;
 import com.app.mega.dto.request.NoticeRequest;
 import com.app.mega.dto.request.NoticeTagsRequest;
 import com.app.mega.dto.response.NoticeResponse;
+import com.app.mega.entity.Course;
 import com.app.mega.entity.Notice;
 import com.app.mega.entity.NoticeTag;
+import com.app.mega.repository.CourseRepository;
 import com.app.mega.repository.NoticeRepository;
 import com.app.mega.repository.NoticeTagRepository;
 import java.util.List;
@@ -20,10 +22,12 @@ public class NoticeService {
 
   private final NoticeRepository noticeRepository;
   private final NoticeTagRepository noticeTagRepository;
+  private final CourseRepository courseRepository;
 
-  public NoticeService(NoticeRepository noticeRepository, NoticeTagRepository noticeTagRepository) {
+  public NoticeService(NoticeRepository noticeRepository, NoticeTagRepository noticeTagRepository, CourseRepository courseRepository) {
     this.noticeRepository = noticeRepository;
     this.noticeTagRepository = noticeTagRepository;
+    this.courseRepository = courseRepository;
   }
 
   public void paging() {
@@ -35,8 +39,8 @@ public class NoticeService {
 
 
   @Transactional
-  public Page<NoticeResponse> readNotices(Pageable pageable) {
-    Page<Notice> page = noticeRepository.findAll(pageable);
+  public Page<NoticeResponse> readNotices(Pageable pageable, Long courseId) {
+    Page<Notice> page = noticeRepository.findAllByCourseId(pageable, courseId);
     System.out.println(page);
     return page.map(NoticeResponse::new);
 //    return noticeRepository.findAll().stream().map(NoticeResponse::new).collect(Collectors.);
@@ -49,8 +53,9 @@ public class NoticeService {
   }
 
   @Transactional
-  public void createNotice(NoticeRequest noticeRequest) {
-    Notice savedNotice = noticeRepository.save(noticeRequest.toEntity());
+  public void createNotice(NoticeRequest noticeRequest, Long courseId) {
+    Course course = courseRepository.findById(courseId).orElseThrow(IllegalArgumentException::new);
+    Notice savedNotice = noticeRepository.save(noticeRequest.toEntity(course));
 
     noticeRequest.getTags().forEach(tag -> {
       noticeTagRepository.save(new NoticeTagsRequest().toEntity(savedNotice, tag));
