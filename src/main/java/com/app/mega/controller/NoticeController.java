@@ -44,7 +44,7 @@ public class NoticeController {
           CommonResponse.<Page<NoticeResponse>>builder().responseCode(-1).responseMessage("에러")
               .data(null).build());
     }
-    System.out.println(noticeResponse);
+
     return ResponseEntity.status(HttpStatus.OK).body(
         CommonResponse.<Page<NoticeResponse>>builder().responseCode(1).responseMessage("성공")
             .data(noticeResponse).build());
