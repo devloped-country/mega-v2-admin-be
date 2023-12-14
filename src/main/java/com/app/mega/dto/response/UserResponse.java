@@ -7,13 +7,17 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.util.List;
 
 @Data
 @AllArgsConstructor
+@Builder
+@ToString
 public class UserResponse {
         private Long id;
         private String name;

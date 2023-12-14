@@ -10,23 +10,24 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PaymentDto {
-    @NonNull
-    private PayType payType;
+//    @NonNull
+//    private PayType payType;
     @NonNull
     private Long amount;
     @NonNull
     private String orderName;
     private String yourSuccessUrl;
     private String yourFailUrl;
+    private String payName;
 
 
     public Payment toEntity() {
         return Payment.builder()
-                .payType(payType)
+//                .payType(payType)
                 .amount(amount)
-                .orderName(orderName)
                 .orderId(UUID.randomUUID().toString())
                 .paySuccessYN(false)
+                .payName(payName)
                 .build();
     }
 }

@@ -30,21 +30,32 @@ public class PaymentController {
         this.tossPaymentConfig = tossPaymentConfig;
         this.paymentMapper = paymentMapper;
     }
+//--------------------------------------------
+//    @PostMapping("/toss")
+//    public ResponseEntity requestTossPayment(@RequestBody @Valid PaymentDto paymentReqDto) {
+//        User user = new User();
+//        user.setName("메가");
+//        user.setEmail("sjh8924@naver.com");
+//        user.setPhone("01033802064");
+//        user.setIsIdentified(true);
+//-----------------------------------------------
     //    @AuthenticationPrincipal User user
     @PostMapping("/toss")
     public ResponseEntity requestTossPayment(@RequestBody @Valid PaymentDto paymentReqDto) {
         User user = new User();
-        user.setName("김유범");
-        user.setEmail("kimub1204@naver.com");
-        user.setPhone("01086341449");
+        user.setName("메가");
+        user.setEmail("sjh8924@naver.com");
+        user.setPhone("01033802064");
         user.setIsIdentified(true);
 //        PaymentResDto paymentResDto = paymentService.equestTossPayment(paymentReqDto.toEntity(), user.getName()).toPaymentResDto();
         Payment payment = paymentReqDto.toEntity();
-        PaymentResDto paymentResDto = paymentService.requestTossPayment(payment, user.getName()).toPaymentResDto();
+        /////////////////////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        PaymentResDto paymentResDto = paymentService.requestTossPayment(payment, user.getEmail()).toPaymentResDto();
         paymentResDto.setSuccessUrl(paymentReqDto.getYourSuccessUrl() == null ? tossPaymentConfig.getSuccessUrl() : paymentReqDto.getYourSuccessUrl());
         paymentResDto.setFailUrl(paymentReqDto.getYourFailUrl() == null ? tossPaymentConfig.getFailUrl() : paymentReqDto.getYourFailUrl());
         return ResponseEntity.ok().body(new SingleResponse<>(paymentResDto));
     }
+
     @PostMapping("/toss/success")
     public ResponseEntity tossPaymentSuccess(
             @RequestParam String paymentKey,
