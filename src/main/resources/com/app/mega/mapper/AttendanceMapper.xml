@@ -9,7 +9,7 @@
         SET status = #{changeStatus}
         WHERE user_id = #{userId}
     </update>
-<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~승인 미승인부분~~~~~~~~~~~~~~~~~ -->
+    <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~승인 미승인부분~~~~~~~~~~~~~~~~~ -->
     <update id="AttendanceAllowChangeYes">
         UPDATE attendance
         SET status = #{status}
@@ -25,10 +25,22 @@
         SET status_change_allow = 2
         WHERE attendance_id = #{attendanceId}
     </update>
-<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~승인 미승인부분~~~~~~~~~~~~~~~~~ -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~승인 미승인부분~~~~~~~~~~~~~~~~~ -->
     <select id="getUserList" resultType="com.app.mega.dto.response.UserResponse">
         SELECT id, name, email, password, phone, is_identified FROM user
     </select>
+
+    <select id="getCourse" resultType="com.app.mega.dto.response.CourseResponse">
+        SELECT id, name FROM course
+    </select>
+    <select id="getUserListByCourse" resultType="com.app.mega.dto.response.UserResponse">
+        SELECT id, name, email, password, phone, is_identified FROM user WHERE course_id = #{courseId}
+    </select>
+
+    <select id="getUserListById" resultType="com.app.mega.dto.response.UserResponse">
+        SELECT id, name, email, password, phone, is_identified FROM user WHERE id = #{id}
+    </select>
+
     <select id="getAttendanceListByUserIdAndMonth" resultType="com.app.mega.dto.response.AttendanceResponse">
         SELECT
             id,
@@ -43,7 +55,7 @@
 
     <select id="getAttendanceListByUserId" resultType="com.app.mega.dto.response.AttendanceResponse">
         SELECT
-              id
+            id
              ,DATE_FORMAT(start_time, '%Y-%m-%d %H:%i:%s')
              ,DATE_FORMAT(end_time, '%Y-%m-%d %H:%i:%s')
              ,status
@@ -102,12 +114,21 @@
         INSERT INTO attendance (reason, userId, date, status) VALUES (#{dto.userId}, #{dto.date}, #{dto.status})
     </insert>
 
+
+
     <select id="getAppliancesById" resultType="com.app.mega.dto.response.ApplianceResponse" parameterType="long">
-        SELECT *
+        SELECT status,attendance_id, `time`, user_id, reason, status_change_allow
         FROM appliance
         WHERE user_id = #{id}
     </select>
 
+
+
+    <select id="getAttendanceById" resultType="com.app.mega.dto.response.AttendanceResponse" parameterType="long">
+        SELECT *
+        FROM attendance
+        WHERE user_id = #{id}
+    </select>
     <update id="updateAttendance">
         UPDATE attendance SET userId = #{attendanceResponse.userId}, date = #{attendanceResponse.date}, status = #{attendanceResponse.status}
         WHERE id = #{id}

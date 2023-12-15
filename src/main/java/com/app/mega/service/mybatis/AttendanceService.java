@@ -1,14 +1,19 @@
 package com.app.mega.service.mybatis;
 
+import com.amazonaws.services.dynamodbv2.xspec.L;
 import com.app.mega.dto.request.ApplianceRequest;
 import com.app.mega.dto.request.AttendanceRequest;
-import com.app.mega.dto.response.ApplianceResponse;
-import com.app.mega.dto.response.AttendanceResponse;
-import com.app.mega.dto.response.AttendanceSum;
-import com.app.mega.dto.response.UserResponse;
+import com.app.mega.dto.request.CourseRequest;
+import com.app.mega.dto.response.*;
 import com.app.mega.dto.request.ApplianceRequest;
 import com.app.mega.entity.Attendance;
+import com.app.mega.entity.Course;
+import com.app.mega.entity.Institution;
+import com.app.mega.entity.User;
 import com.app.mega.mapper.AttendanceMapper;
+import com.app.mega.repository.CourseRepository;
+import com.app.mega.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
@@ -16,12 +21,20 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class AttendanceService {
 
+    private final UserRepository userRepository;
     private final AttendanceMapper attendanceMapper;
+//    public AttendanceService(AttendanceMapper attendanceMapper) {
+//        this.attendanceMapper = attendanceMapper;
+//    }
 
     public UserResponse getUserInfo(Long id){
         return attendanceMapper.getUserInfo(id);}
@@ -124,9 +137,6 @@ public class AttendanceService {
     public void AttendanceChangeNoRequest(Long attendanceId,Long id) {
         attendanceMapper.AttendanceChangeNoRequest(attendanceId,id);
     }
-    public AttendanceService(AttendanceMapper attendanceMapper) {
-        this.attendanceMapper = attendanceMapper;
-    }
 
     public Long getAttendanceId(Long id,LocalDate date) {
         return attendanceMapper.getAttendanceId(id,date);
@@ -137,15 +147,47 @@ public class AttendanceService {
         return attendanceMapper.getUserList();
     }
 
-    public CourseResponse getCourse(){return  attendanceMapper.getCourse();}
+    public List<CourseResponse> getCourse(){return  attendanceMapper.getCourse();}
 
-
-    public List<AttendanceResponse> attendanceList() {
-        return attendanceMapper.attendanceList();
+    public List<UserResponse> getUserListByCourse(Long courseId) {
+        return attendanceMapper.getUserListByCourse(courseId);
     }
 
+//    public Map<Long, List<UserResponse>>  getUserListByCourse(Institution institution) {
+//        Map<Long, List<UserResponse>> userListByCourse = new HashMap<>();
+//        List<UserResponse> userResponseList = new ArrayList<>();
+//        List<Course> courseList = institution.getCourseList();
+//        for(Course course : courseList) {
+//            List<User> userList = userRepository.findAllByCourse(course);
+//            for(User user : userList) {
+//                UserResponse userResponse = UserResponse.builder()
+//                        .id(user.getId())
+//                        .name(user.getName())
+//                        .email(user.getEmail())
+//                        .phone(user.getPhone())
+//                        .isSigned(user.getIsIdentified())
+//                        .build();
+//                userResponseList.add(userResponse);
+//            }
+//            userListByCourse.put(course.getId(), userResponseList);
+//        }
+//        return userListByCourse;
+//    }
+
+    public List<UserResponse> getUserListById(Long id) {
+        return attendanceMapper.getUserListById(id);
+    }
+//    public List<AttendanceResponse> attendanceList() {
+//        return attendanceMapper.attendanceList();
+//    }
+
     public List<ApplianceResponse> getAppliancesById(Long id) {
+        System.out.println(attendanceMapper.getAppliancesById(id));
+
         return attendanceMapper.getAppliancesById(id);
+    }
+    public List<AttendanceResponse> getAttendanceById(Long id) {
+        return attendanceMapper.getAttendanceById(id);
     }
 
     public void deleteAttendance(Long id) {

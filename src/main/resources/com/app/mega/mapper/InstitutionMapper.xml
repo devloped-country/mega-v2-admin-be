@@ -6,5 +6,14 @@
   <insert id="saveInstitution" useGeneratedKeys="true" keyProperty="id">
     INSERT INTO institution (name, latitude, longitude) VALUES (#{name}, #{latitude}, #{longitude})
   </insert>
+
+  <select id="findInstitutionLocationByEmail" resultType="com.app.mega.dto.response.LocationResponse">
+    SELECT latitude, longitude FROM institution WHERE id = (SELECT institution_id FROM admin WHERE email = #{email})
+  </select>
+
+  <update id="updateInstitutionLocationByEmail">
+    UPDATE institution SET latitude = #{locationRequest.latitude}, longitude = #{locationRequest.longitude} WHERE id = (SELECT institution_id FROM admin WHERE email = #{email})
+  </update>
+
 </mapper>
 

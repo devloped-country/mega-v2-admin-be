@@ -15,3 +15,7 @@ public class AttendanceProfileSum {
     private Map<Integer, Long> statusCountMap;//추가
 
 }
+//List<AttendanceProfileSum> : 과정 1개당 모든 학생정보
+//AttendanceProfileSum = UserResponse(학생테이블) + List<AttendanceResponse>(학생)
+//AttendanceResponse: 출석정보
+//

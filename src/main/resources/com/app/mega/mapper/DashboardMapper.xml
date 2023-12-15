@@ -44,9 +44,10 @@
            INNER JOIN attendance ON user.id = attendance.user_id
            LEFT OUTER JOIN appliance ON user.id = appliance.user_id AND attendance.id = appliance.attendance_id
     WHERE attendance_date BETWEEN CURDATE() - INTERVAL WEEKDAY(CURDATE()) DAY
-      AND CURDATE() + INTERVAL (4 - WEEKDAY(CURDATE())) DAY
+      AND CURDATE() + INTERVAL (4 - WEEKDAY(CURDATE())) DAY AND user.course_id = #{id}
     GROUP BY attendanceDate, attendanceStatus
-    HAVING attendanceStatus = 1;
+    HAVING attendanceStatus = 1
+    ORDER BY attendance_date;
   </select>
 
   <select id="findThisWeekLateCountByCourseId" resultType="com.app.mega.dto.response.DashboardResponse">
@@ -58,8 +59,9 @@
            INNER JOIN attendance ON user.id = attendance.user_id
            LEFT OUTER JOIN appliance ON user.id = appliance.user_id AND attendance.id = appliance.attendance_id
     WHERE attendance_date BETWEEN CURDATE() - INTERVAL WEEKDAY(CURDATE()) DAY
-      AND CURDATE() + INTERVAL (4 - WEEKDAY(CURDATE())) DAY
+      AND CURDATE() + INTERVAL (4 - WEEKDAY(CURDATE())) DAY AND user.course_id = #{id}
     GROUP BY attendanceDate, attendanceStatus
-    HAVING attendanceStatus = 2;
+    HAVING attendanceStatus = 2
+    ORDER BY attendance_date;
   </select>
 </mapper>

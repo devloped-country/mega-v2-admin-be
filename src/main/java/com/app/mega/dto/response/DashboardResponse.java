@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DashboardResponse {
+public class DashboardResponse implements Comparable<DashboardResponse> {
   private String userName;
   private String userPhone;
   private Integer applianceStatus;
@@ -19,4 +19,9 @@ public class DashboardResponse {
   private LocalDate attendanceDate;
   private LocalDateTime applianceTime;
   private Integer count;
+
+  @Override
+  public int compareTo(DashboardResponse o) {
+    return this.attendanceDate.compareTo(o.attendanceDate);
+  }
 }

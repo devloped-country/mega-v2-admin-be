@@ -16,9 +16,13 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class ApplianceResponse {
-    private String reason;
-    private LocalDate applianceDate= LocalDate.now();//dto
-    //    private Attendance attendanceId;
-//    private User userId;
     private Integer status;
+    private Long attendance;
+    private LocalDateTime time;//dto
+    private Long userId;
+    private String reason;
+    private Integer statusChangeAllow;
+
+
+//    private LocalDate time;
 }

@@ -2,8 +2,10 @@ package com.app.mega.mapper;
 
 import com.app.mega.dto.request.ApplianceRequest;
 import com.app.mega.dto.request.AttendanceRequest;
+import com.app.mega.dto.request.CourseRequest;
 import com.app.mega.dto.response.ApplianceResponse;
 import com.app.mega.dto.response.AttendanceResponse;
+import com.app.mega.dto.response.CourseResponse;
 import com.app.mega.dto.response.UserResponse;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.data.repository.query.Param;
@@ -20,11 +22,13 @@ public interface AttendanceMapper {
     void ApplianceAllowChangeYse(Long attendanceId,Long id);
 
     void AttendanceChangeNoRequest(Long attendanceId,Long id);
-
     List<AttendanceResponse> getAttendanceListByUserId(Long userId);
 
-    List<UserResponse> getUserList();
+    List<CourseResponse> getCourse();
 
+    List<UserResponse> getUserList();
+    List<UserResponse> getUserListByCourse(Long courseId);
+    List<UserResponse> getUserListById(Long id);
     void saveAttendance(AttendanceRequest attendanceRequest);
 
     AttendanceResponse getAttendanceResponse(Long attendanceId) ;
@@ -35,6 +39,7 @@ public interface AttendanceMapper {
     List<AttendanceResponse> attendanceList();
 
     List<ApplianceResponse> getAppliancesById(Long id);
+    List<AttendanceResponse> getAttendanceById(Long id);
 
     Long getAttendanceId(Long id, LocalDate date);
 
