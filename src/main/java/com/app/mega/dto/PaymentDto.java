@@ -16,8 +16,8 @@ public class PaymentDto {
     private Long amount;
     @NonNull
     private String orderName;
-    private String yourSuccessUrl;
-    private String yourFailUrl;
+//    private String yourSuccessUrl;
+//    private String yourFailUrl;
     private String payName;
 
 

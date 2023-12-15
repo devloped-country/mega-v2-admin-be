@@ -279,7 +279,7 @@ public class AttendanceController {
         //-> id.name,imageUrl,attendances//
         //코스정보추가
         //--유저 네임이랑 코스만 만들어주는 api만들자
-        //--유저아이디 는 보네줌
+        //코스아이디 는 보네줌
         @GetMapping("/{id}/userInfo")
         public UserResponse getUserInfo(@PathVariable("id") Long id) {
                 //return AttendanceRepository.findById(id).orElse(null);
