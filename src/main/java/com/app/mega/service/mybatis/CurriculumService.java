@@ -11,6 +11,10 @@ import com.app.mega.mapper.CurriculumMapper;
 import com.app.mega.repository.CourseRepository;
 import com.app.mega.repository.CurriculumRepository;
 import com.app.mega.repository.DetailSubjectRepository;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -113,6 +117,17 @@ public class CurriculumService {
         System.out.println("herererere");
         System.out.println(curriculumResponseList.get(0));
 
+        // startDate를 기준으로 정렬하는 Comparator
+        Comparator<CurriculumResponse> startDateComparator = Comparator.comparing(curriculumResponse -> {
+            String startDateString = curriculumResponse.getStartDate();
+            try {
+                return new SimpleDateFormat("yyyy-MM-dd").parse(startDateString);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return null;
+            }
+        });
+        Collections.sort(curriculumResponseList, startDateComparator);
 
         return curriculumResponseList;
     }
