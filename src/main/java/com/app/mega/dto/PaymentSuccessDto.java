@@ -10,13 +10,13 @@ import lombok.*;
 @Data
 public class PaymentSuccessDto {
 
-    Long amount;
+    Long amount;////
     String mid;
     String version;
-    String paymentKey;
-    String orderId;
+    String paymentKey;////
+    String orderId;////
     String orderName;
-    String currency;
+    String currency;////
     String method;
     String totalAmount;
     String balanceAmount;
@@ -29,4 +29,6 @@ public class PaymentSuccessDto {
     String cultureExpense;
     PaymentSuccessCardDto card;
     String type;
+    Long month;
+    Long institutionId;////
 }
