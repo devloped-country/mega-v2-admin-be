@@ -34,7 +34,6 @@ public class NoteSend {
 
   @NotNull
   @Lob
-  @Column(columnDefinition = "TINYINT(1)")
   private String content; //쪽지내용
 
   @NotNull
