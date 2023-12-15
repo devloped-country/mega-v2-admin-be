@@ -182,7 +182,7 @@ public class AttendanceService {
 //    }
 
     public List<ApplianceResponse> getAppliancesById(Long id) {
-
+        System.out.println(attendanceMapper.getAppliancesById(id));
 
         return attendanceMapper.getAppliancesById(id);
     }
