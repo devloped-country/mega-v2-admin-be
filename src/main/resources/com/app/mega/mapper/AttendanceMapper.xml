@@ -117,7 +117,7 @@
 
 
     <select id="getAppliancesById" resultType="com.app.mega.dto.response.ApplianceResponse" parameterType="long">
-        SELECT status,attendance_id,DATE_FORMAT(FROM_UNIXTIME(`time`), '%Y-%m-%d')AS time, user_id, reason
+        SELECT status,attendance_id, `time`, user_id, reason, status_change_allow
         FROM appliance
         WHERE user_id = #{id}
     </select>

@@ -18,9 +18,10 @@ import lombok.Data;
 public class ApplianceResponse {
     private Integer status;
     private Long attendance;
-    private LocalDate time;//dto
+    private LocalDateTime time;//dto
     private Long userId;
     private String reason;
+    private Integer statusChangeAllow;
 
 
 //    private LocalDate time;
