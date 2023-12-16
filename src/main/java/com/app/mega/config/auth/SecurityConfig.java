@@ -29,20 +29,22 @@ public class SecurityConfig {
     // 시큐리티 필터 설정
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http.
-                authorizeHttpRequests(auth -> auth
-//                        .requestMatchers("/api/auth/register/institution","/api/auth/login", "/api/auth/identify",
-//                                "/api/auth/identify/certificate","/api/auth/","/health").permitAll()
-                        .requestMatchers("/api/**", "/health").permitAll()
+
+        return http
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/auth/register/institution","/api/auth/login", "/api/auth/identify",
+                                "/api/auth/identify/certificate","/api/auth/","/health").permitAll()
+//                        .requestMatchers("/api/**", "/health").permitAll()
                         .anyRequest().authenticated())
-                .csrf(AbstractHttpConfigurer::disable)
+
+                .csrf(AbstractHttpConfigurer::disable).cors(AbstractHttpConfigurer::disable)
                 .sessionManagement(httpSecuritySessionManagementConfigurer ->
                         httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // 인증 공급자 추가
                 .authenticationProvider(authenticationProvider)
                 // 인증 전 처리 해야할 필터 추가
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class).build();
+
     }
 
     @Bean
