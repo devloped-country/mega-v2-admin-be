@@ -21,6 +21,10 @@ public class UserService {
     return userMapper.findUserByEmail(email);
   }
 
+  public UserResponse find(String email) {
+    return userMapper.findUserByEmail(email);
+  }
+
   public List<UserResponse> findAllUser() {
     return userMapper.findAllUser();
   }

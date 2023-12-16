@@ -32,6 +32,7 @@ public class AttendanceService {
 
     private final UserRepository userRepository;
     private final AttendanceMapper attendanceMapper;
+
 //    public AttendanceService(AttendanceMapper attendanceMapper) {
 //        this.attendanceMapper = attendanceMapper;
 //    }
