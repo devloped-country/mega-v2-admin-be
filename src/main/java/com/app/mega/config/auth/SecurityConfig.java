@@ -51,7 +51,11 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(Arrays.asList("http://localhost:3001", "https://admin.megamega-app.com"));
+        config.setAllowedOriginPatterns(Arrays.asList(
+                "https://admin.megamega-app.com",
+                "http://admin.megamega-app.com",
+                "http://localhost:3001"
+        ));
         config.addAllowedMethod("*"); // 모든 HTTP 메소드 허용
         config.addAllowedHeader("*"); // 모든 헤더 허용
         config.setAllowCredentials(true);
