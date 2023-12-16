@@ -17,7 +17,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "*")
 @RequestMapping("/api/notice")
 public class NoticeController {
 
