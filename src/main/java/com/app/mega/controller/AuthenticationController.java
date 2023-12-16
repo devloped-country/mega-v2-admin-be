@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin(origins = "https://admin.megamega-app.com")
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
