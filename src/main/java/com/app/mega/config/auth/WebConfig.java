@@ -11,11 +11,14 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOriginPatterns(
+                .allowedOrigins(
                         "https://admin.megamega-app.com",
                         "http://admin.megamega-app.com",
                         "https://user.megamega-app.com",
-                        "http://user.megamega-app.com"
+                        "http://user.megamega-app.com",
+                        "http://localhost:3000",
+                        "http://localhost:3001",
+                        "http://localhost:3002"
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE","PATCH", "get","post","put","delete","patch")
                 .allowedHeaders("*")

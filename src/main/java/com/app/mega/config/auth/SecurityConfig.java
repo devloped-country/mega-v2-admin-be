@@ -12,6 +12,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
@@ -37,7 +38,7 @@ public class SecurityConfig {
 //                        .requestMatchers("/api/**", "/health").permitAll()
                         .anyRequest().authenticated())
 
-                .csrf(AbstractHttpConfigurer::disable).cors(AbstractHttpConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable) .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(httpSecuritySessionManagementConfigurer ->
                         httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // 인증 공급자 추가
@@ -48,20 +49,17 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CorsFilter corsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-
-        config.addAllowedOrigin("http://localhost:3001");
-        config.addAllowedOrigin("https://admin.megamega-app.com");
+        config.setAllowedOrigins(Arrays.asList("http://localhost:3001", "https://admin.megamega-app.com"));
         config.addAllowedMethod("*"); // 모든 HTTP 메소드 허용
         config.addAllowedHeader("*"); // 모든 헤더 허용
         config.setAllowCredentials(true);
+        config.setMaxAge(3600L);
 
-        config.setAllowedOrigins(Arrays.asList("http://localhost:3001", "https://admin.megamega-app.com"));
-
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
-        return new CorsFilter(source);
+        return source;
     }
 }
 
