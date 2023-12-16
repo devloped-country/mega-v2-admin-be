@@ -1,5 +1,6 @@
 package com.app.mega.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -14,6 +15,7 @@ import java.util.List;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.apache.ibatis.annotations.One;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
@@ -60,5 +62,8 @@ public class Institution {
 
   @OneToMany(mappedBy = "institution", fetch = FetchType.EAGER)
   private List<User> user;
-
+//추가추가
+  @OneToMany(mappedBy = "institution", fetch = FetchType.EAGER)
+  @JsonManagedReference
+  private List<Payment> payment;
 }

@@ -11,6 +11,10 @@ import com.app.mega.mapper.CurriculumMapper;
 import com.app.mega.repository.CourseRepository;
 import com.app.mega.repository.CurriculumRepository;
 import com.app.mega.repository.DetailSubjectRepository;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -113,6 +117,17 @@ public class CurriculumService {
         System.out.println("herererere");
         System.out.println(curriculumResponseList.get(0));
 
+        // startDate를 기준으로 정렬하는 Comparator
+        Comparator<CurriculumResponse> startDateComparator = Comparator.comparing(curriculumResponse -> {
+            String startDateString = curriculumResponse.getStartDate();
+            try {
+                return new SimpleDateFormat("yyyy-MM-dd").parse(startDateString);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return null;
+            }
+        });
+        Collections.sort(curriculumResponseList, startDateComparator);
 
         return curriculumResponseList;
     }
@@ -177,6 +192,18 @@ public class CurriculumService {
         });
 
         curriculumRepository.delete(curriculum);
+    }
+
+    @Transactional
+    public void editCurriculumList(CurriculumRequest request) {
+        int totalCount = curriculumRepository.prevCurriculumCount(request.getCourseId());   //커리큘럼 갯수
+        List<Curriculum> curriculums = curriculumRepository.findAllBycourse_id(request.getCourseId());  //커리큘럼 리스트 불러오기
+
+        for(int listNumber = 0; listNumber < totalCount; listNumber++) {
+            Curriculum curriculum = curriculums.get(listNumber);    //커리큘럼 n번째 커리큘럼 가져오기
+            curriculum.setListOrder(request.getOrderList());        //그 커리큘럼에 몇번째 넣을껀지 저장
+        }
+        curriculumRepository.saveAll(curriculums);
     }
 }
 

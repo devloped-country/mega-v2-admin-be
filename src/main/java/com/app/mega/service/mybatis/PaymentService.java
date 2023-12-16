@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
 public interface PaymentService {
-    Payment requestTossPayment(Payment payment, String userEmail);
+    Payment requestTossPayment(Payment payment);
     PaymentSuccessDto tossPaymentSuccess(String paymentKey, String orderId, Long amount);
 //    PaymentSuccessDto requestPaymentAccept(String paymentKey, String orderId, Long amount);
 //    Slice<Payment> findAllChargingHistories(String username, Pageable pageable);

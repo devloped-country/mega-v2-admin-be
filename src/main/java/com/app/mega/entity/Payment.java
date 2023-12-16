@@ -2,14 +2,15 @@ package com.app.mega.entity;
 
 import com.app.mega.dto.PayType;
 import com.app.mega.dto.response.PaymentResDto;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.domain.Auditable;
 
+import java.time.LocalDateTime;
 import java.time.temporal.TemporalAccessor;
 import java.util.Optional;
-
 @Entity
 @Getter
 @Builder
@@ -17,6 +18,7 @@ import java.util.Optional;
 @NoArgsConstructor
 @Setter
 @Table
+@ToString(exclude = {"institution"})
 //        (indexes = {
 //        @Index(name = "idx_payment_member", columnList = "admin"),
 //        @Index(name = "idx_payment_paymentKey", columnList = "paymentKey"),
@@ -53,29 +55,26 @@ public class Payment implements Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "payment_id", unique = true)
     private Long paymentId;
-
     @ColumnDefault("100")
     private Long amount;
-
     private String payName;
-
     private String orderId;
-
     @Column(columnDefinition = "TINYINT(1)")
     private Boolean paySuccessYN;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "user")//user_id인지 확인하기
-    private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "institution_id")
+    @JsonBackReference
+    private Institution institution;
 
     private String paymentKey;
-
     private String failReason;
-
     @Column(columnDefinition = "TINYINT(1)")
     private Boolean cancelYN;
-
     private String cancelReason;
+
+    private LocalDateTime currentPayTime;
+    private LocalDateTime nextPayTime;
 
     public PaymentResDto toPaymentResDto() {
         return PaymentResDto.builder()
@@ -83,8 +82,8 @@ public class Payment implements Auditable {
                 .amount(amount)
                 .payName(payName)
                 .orderId(orderId)
-                .adminEmail(user.getEmail())
-                .adminName(user.getName())
+//                .adminEmail(institution.getEmail())
+                .adminName(institution.getName())
 //                .createdAt(String.valueOf(getCreatedAt()))
                 .cancelYN(cancelYN)
                 .failReason(failReason)

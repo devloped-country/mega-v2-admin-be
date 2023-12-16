@@ -32,6 +32,7 @@ public class AttendanceService {
 
     private final UserRepository userRepository;
     private final AttendanceMapper attendanceMapper;
+
 //    public AttendanceService(AttendanceMapper attendanceMapper) {
 //        this.attendanceMapper = attendanceMapper;
 //    }
@@ -182,7 +183,7 @@ public class AttendanceService {
 //    }
 
     public List<ApplianceResponse> getAppliancesById(Long id) {
-
+        System.out.println(attendanceMapper.getAppliancesById(id));
 
         return attendanceMapper.getAppliancesById(id);
     }

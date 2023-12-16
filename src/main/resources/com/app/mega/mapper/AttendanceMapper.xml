@@ -117,7 +117,7 @@
 
 
     <select id="getAppliancesById" resultType="com.app.mega.dto.response.ApplianceResponse" parameterType="long">
-        SELECT status,attendance_id,DATE_FORMAT(FROM_UNIXTIME(`time`), '%Y-%m-%d')AS time, user_id, reason
+        SELECT status,attendance_id, `time`, user_id, reason, status_change_allow
         FROM appliance
         WHERE user_id = #{id}
     </select>
@@ -138,9 +138,9 @@
         DELETE FROM attendance WHERE id = #{id}
     </delete>
     <insert id="create" useGeneratedKeys="true" keyProperty="id">
-        <!-- Adjust column names as per your Appliance table structure -->
         INSERT INTO appliance (reason, date, status, attendance_id)
-        VALUES (#{dto.property1}, #{dto.property2}, #{dto.property3}, #{dto.attendance.id})    </insert>
+        VALUES (#{dto.property1}, #{dto.property2}, #{dto.property3}, #{dto.attendance.id})
+    </insert>
 
 
     <update id="attendanceChangegAllow">
