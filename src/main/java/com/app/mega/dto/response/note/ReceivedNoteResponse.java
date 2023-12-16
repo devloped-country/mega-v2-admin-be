@@ -13,7 +13,7 @@ public class ReceivedNoteResponse {
     Long id;
     String title;
     String content;
-    String from;
+    String senderName;
     Boolean isRead;
     LocalDateTime time;
 }

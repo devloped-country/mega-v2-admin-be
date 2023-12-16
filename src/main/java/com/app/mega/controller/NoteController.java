@@ -3,10 +3,8 @@ package com.app.mega.controller;
 import com.app.mega.dto.request.note.NoteIdRequest;
 import com.app.mega.dto.request.note.NoteSendRequest;
 import com.app.mega.dto.request.note.ReceiverRequest;
-import com.app.mega.dto.response.note.ReceivedNoteResponse;
-import com.app.mega.dto.response.note.ReceiverResponse;
-import com.app.mega.dto.response.note.SendedNoteResponse;
-import com.app.mega.dto.response.note.TrashNoteResponse;
+import com.app.mega.dto.response.NoteResponse;
+import com.app.mega.dto.response.note.*;
 import com.app.mega.entity.Admin;
 import com.app.mega.entity.NoteSend;
 import com.app.mega.entity.User;
@@ -22,20 +20,19 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/note")
-//@CrossOrigin(origins = "*")
 public class NoteController {
     private final NoteService noteService;
 
     //과정에 해당하는 학생들 불러오기 (쪽지쓰기 선택시)
-    @GetMapping("/receivers")
-    public List<ReceiverResponse> readReceiver (@RequestBody ReceiverRequest request) {
-        return noteService.readReceiver(request.getCourseId());
+    @GetMapping("/{courseId}/receivers")
+    public List<ReceiverResponse> readReceiver (@PathVariable Long courseId) {
+        return noteService.readReceiver(courseId);
     }
 
     //발신시 쪽지 저장
     @PostMapping("/register")
-    public void registerNote (@RequestBody NoteSendRequest request, @AuthenticationPrincipal Admin admin) throws Exception {
-        noteService.registerNote(request, admin);
+    public AfterNoteSendResponse registerNote (@RequestBody NoteSendRequest request, @AuthenticationPrincipal Admin admin) throws Exception {
+        return noteService.registerNote(request, admin);
     }
 
     //수신쪽지함 불러오기
@@ -75,4 +72,8 @@ public class NoteController {
         return noteService.realDeleteSendedNotes(request.getSelectedNoteId(), admin);
     }
 
+    @GetMapping("/{id}")
+    public NoteResponse readNote (@PathVariable Long id, @AuthenticationPrincipal Admin admin) {
+        return noteService.readNote(id, admin);
+    }
 }

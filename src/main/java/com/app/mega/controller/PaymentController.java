@@ -52,7 +52,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.function.EntityResponse;
 
-//@CrossOrigin(origins = "*")
 @RestController
 @Validated
 @RequestMapping("/api/v1/payments")

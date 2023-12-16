@@ -2,10 +2,8 @@ package com.app.mega.service.jpa;
 
 
 import com.app.mega.dto.request.note.NoteSendRequest;
-import com.app.mega.dto.response.note.ReceivedNoteResponse;
-import com.app.mega.dto.response.note.ReceiverResponse;
-import com.app.mega.dto.response.note.SendedNoteResponse;
-import com.app.mega.dto.response.note.TrashNoteResponse;
+import com.app.mega.dto.response.NoteResponse;
+import com.app.mega.dto.response.note.*;
 import com.app.mega.entity.Admin;
 import com.app.mega.entity.NoteReceive;
 import com.app.mega.entity.NoteSend;
@@ -47,7 +45,7 @@ public class NoteService {
     }
 
     //쪽지 저장 (발신)
-    public void registerNote(NoteSendRequest request, Admin admin) {
+    public AfterNoteSendResponse registerNote(NoteSendRequest request, Admin admin) {
         System.out.println("registerNote");
 
         String title = request.getTitle();
@@ -64,6 +62,7 @@ public class NoteService {
                 .title(title)
                 .content(content)
                 .createTime(LocalDateTime.now())
+                .isRealDeleted(false)
                 .admin(admin)
                 .build();
         noteSendRepository.save(noteSend);
@@ -72,10 +71,15 @@ public class NoteService {
         for(User receiver : to) {
             NoteReceive noteReceive = NoteReceive.builder()
                     .noteSend(noteSend)
+                    .isRealDeleted(false)
+                    .isDeleted(false)
+                    .isRead(false)
                     .user(receiver)
                     .build();
             noteReceiveRepository.save(noteReceive);
         }
+
+        return AfterNoteSendResponse.builder().myName(admin.getName()).noteSendId(noteSend.getId()).build();
     }
 
     //발신쪽지 불러오기
@@ -109,11 +113,11 @@ public class NoteService {
         for(NoteReceive receivedNote:receivedNotes) {
             NoteSend note = receivedNote.getNoteSend();
             ReceivedNoteResponse receivedNoteResponse = ReceivedNoteResponse.builder()
-                    .id(receivedNote.getId())
+                    .id(receivedNote.getNoteSend().getId())
                     .title(note.getTitle())
                     .content(note.getContent())
                     .isRead(receivedNote.getIsRead())
-                    .from(note.getUser().getName())
+                    .senderName(note.getUser().getName())
                     .time(note.getCreateTime())
                     .build();
             notesInfo.add(receivedNoteResponse);
@@ -166,5 +170,18 @@ public class NoteService {
             noteSendRepository.save(noteSend);
         }
         return readNoteSend(admin);
+    }
+
+    public NoteResponse readNote(Long id, Admin admin) {
+        NoteSend noteSend = noteSendRepository.findById(id).get();
+        NoteReceive noteReceive = noteReceiveRepository.findByAdminAndNoteSend(admin, noteSend);
+        noteReceive.setIsRead(true);
+        noteReceiveRepository.save(noteReceive);
+        return NoteResponse.builder()
+                .content(noteSend.getContent())
+                .from(noteSend.getUser().getName())
+                .to(admin.getName())
+                .time(String.valueOf(noteSend.getCreateTime()))
+                .build();
     }
 }

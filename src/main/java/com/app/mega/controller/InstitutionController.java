@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/institution")
-//@CrossOrigin(origins = "*")
 public class InstitutionController {
 
   private final InstitutionService institutionService;
