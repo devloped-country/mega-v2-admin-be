@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@CrossOrigin(origins = "https://admin.megamega-app.com")
 @RestController
 @RequestMapping("/api/dashboard")
 @RequiredArgsConstructor
