@@ -2,10 +2,8 @@ package com.app.mega.service.jpa;
 
 
 import com.app.mega.dto.request.note.NoteSendRequest;
-import com.app.mega.dto.response.note.ReceivedNoteResponse;
-import com.app.mega.dto.response.note.ReceiverResponse;
-import com.app.mega.dto.response.note.SendedNoteResponse;
-import com.app.mega.dto.response.note.TrashNoteResponse;
+import com.app.mega.dto.response.NoteResponse;
+import com.app.mega.dto.response.note.*;
 import com.app.mega.entity.Admin;
 import com.app.mega.entity.NoteReceive;
 import com.app.mega.entity.NoteSend;
@@ -18,9 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -47,7 +43,7 @@ public class NoteService {
     }
 
     //쪽지 저장 (발신)
-    public void registerNote(NoteSendRequest request, Admin admin) {
+    public AfterNoteSendResponse registerNote(NoteSendRequest request, Admin admin) {
         System.out.println("registerNote");
 
         String title = request.getTitle();
@@ -64,6 +60,7 @@ public class NoteService {
                 .title(title)
                 .content(content)
                 .createTime(LocalDateTime.now())
+                .isRealDeleted(false)
                 .admin(admin)
                 .build();
         noteSendRepository.save(noteSend);
@@ -72,10 +69,15 @@ public class NoteService {
         for(User receiver : to) {
             NoteReceive noteReceive = NoteReceive.builder()
                     .noteSend(noteSend)
+                    .isRealDeleted(false)
+                    .isDeleted(false)
+                    .isRead(false)
                     .user(receiver)
                     .build();
             noteReceiveRepository.save(noteReceive);
         }
+
+        return AfterNoteSendResponse.builder().myName(admin.getName()).noteSendId(noteSend.getId()).build();
     }
 
     //발신쪽지 불러오기
@@ -98,6 +100,7 @@ public class NoteService {
                     .build();
             notesInfo.add(sentNoteResponse);
         }
+        Collections.sort(notesInfo, Comparator.comparing(SendedNoteResponse::getTime).reversed());
         return notesInfo;
     }
 
@@ -109,15 +112,16 @@ public class NoteService {
         for(NoteReceive receivedNote:receivedNotes) {
             NoteSend note = receivedNote.getNoteSend();
             ReceivedNoteResponse receivedNoteResponse = ReceivedNoteResponse.builder()
-                    .id(receivedNote.getId())
+                    .id(receivedNote.getNoteSend().getId())
                     .title(note.getTitle())
                     .content(note.getContent())
                     .isRead(receivedNote.getIsRead())
-                    .from(note.getUser().getName())
+                    .senderName(note.getUser().getName())
                     .time(note.getCreateTime())
                     .build();
             notesInfo.add(receivedNoteResponse);
         }
+        Collections.sort(notesInfo, Comparator.comparing(ReceivedNoteResponse::getTime).reversed());
         return notesInfo;
     }
 
@@ -128,7 +132,7 @@ public class NoteService {
         for(NoteReceive trashNote : trashNotes) {
             NoteSend note = trashNote.getNoteSend();
             TrashNoteResponse trashNoteResponse = TrashNoteResponse.builder()
-                .id(trashNote.getId())
+                .id(note.getId())
                 .title(note.getTitle())
                 .content(note.getContent())
                 .from(note.getUser().getName())
@@ -141,7 +145,8 @@ public class NoteService {
     //수신쪽지 삭제 (휴지통 넣기)
     public List<ReceivedNoteResponse> deleteReceivedNotes (List<Long> noteIdsForDelete, Admin admin) {
         for(Long noteId : noteIdsForDelete) {
-            NoteReceive noteReceive = noteReceiveRepository.findById(noteId).get();
+            NoteSend noteSend = noteSendRepository.findById(noteId).get();
+            NoteReceive noteReceive = noteReceiveRepository.findByAdminAndNoteSend(admin, noteSend);
             noteReceive.setIsDeleted(true);
             noteReceiveRepository.save(noteReceive);
         }
@@ -151,7 +156,8 @@ public class NoteService {
     //수신쪽지 완전삭제
     public List<TrashNoteResponse> realDeleteReceivedNotes (List<Long> noteIdsForDelete, Admin admin) {
         for(Long noteId : noteIdsForDelete) {
-            NoteReceive noteReceive = noteReceiveRepository.findById(noteId).get();
+            NoteSend noteSend = noteSendRepository.findById(noteId).get();
+            NoteReceive noteReceive = noteReceiveRepository.findByAdminAndNoteSend(admin, noteSend);
             noteReceive.setIsRealDeleted(true);
             noteReceiveRepository.save(noteReceive);
         }
@@ -166,5 +172,19 @@ public class NoteService {
             noteSendRepository.save(noteSend);
         }
         return readNoteSend(admin);
+    }
+
+    public NoteResponse readNote(Long id, Admin admin) {
+        NoteSend noteSend = noteSendRepository.findById(id).get();
+        NoteReceive noteReceive = noteReceiveRepository.findByAdminAndNoteSend(admin, noteSend);
+        noteReceive.setIsRead(true);
+        noteReceiveRepository.save(noteReceive);
+        return NoteResponse.builder()
+                .content(noteSend.getContent())
+                .from(noteSend.getUser().getName())
+                .to(admin.getName())
+                .title(noteSend.getTitle())
+                .time(String.valueOf(noteSend.getCreateTime()))
+                .build();
     }
 }

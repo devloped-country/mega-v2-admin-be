@@ -1,13 +1,13 @@
 package com.app.mega.dto.response.note;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 
 @Builder
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @ToString
-public class NoteSendResponse {
+public class AfterNoteSendResponse {
     private String myName;
     private Long noteSendId;
 }

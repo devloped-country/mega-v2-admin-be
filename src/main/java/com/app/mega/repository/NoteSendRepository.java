@@ -9,4 +9,5 @@ import java.util.List;
 
 public interface NoteSendRepository  extends JpaRepository<NoteSend, Long> {
     List<NoteSend> findAllByIsRealDeletedAndAdmin(Boolean isRealDeleted, Admin admin);
+
 }
