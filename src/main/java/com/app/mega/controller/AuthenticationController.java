@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-//@CrossOrigin(origins =         )
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
@@ -73,6 +72,7 @@ public class AuthenticationController {
     public ResponseEntity<AuthenticationResponse> authenticate(
         @RequestBody AuthenticationRequest request
     ) {
+        System.out.println(request);
         return ResponseEntity.ok(authenticationService.authenticate(request));
     }
 
