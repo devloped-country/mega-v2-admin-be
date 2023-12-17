@@ -107,6 +107,78 @@
         }
     }
 
+<<<<<<< HEAD
+    @PostMapping("/tosstest0")
+    public void requestTossPayment0(@AuthenticationPrincipal Admin admin, @RequestBody @Valid PaymentReqDto paymentReqDto) {
+        Long institutionId = admin.getInstitution().getId();
+        LocalDateTime currentPayTime = LocalDateTime.now(); // 현재 날짜와 시간 가져오기
+        LocalDateTime NextPayTime = currentPayTime.plus(1, ChronoUnit.DAYS); // 1일 뒤의 날짜 계산
+        paymentService.requestTossPayment0(institutionId,paymentReqDto,currentPayTime,NextPayTime);
+    }
+
+    @PostMapping("/toss3")
+    public void requestTossPayment3(@AuthenticationPrincipal Admin admin, @RequestBody @Valid PaymentReqDto paymentReqDto) {
+        Long institutionId = admin.getInstitution().getId();
+        LocalDateTime currentPayTime = LocalDateTime.now(); // 현재 날짜와 시간 가져오기
+        LocalDateTime NextPayTime = currentPayTime.plus(3, ChronoUnit.MONTHS); // 3개월 뒤의 날짜 계산
+        paymentService.requestTossPayment3(institutionId,paymentReqDto,currentPayTime,NextPayTime);
+    }
+
+    @PostMapping("/toss6")
+    public void requestTossPayment6(@AuthenticationPrincipal Admin admin, @RequestBody @Valid PaymentReqDto paymentReqDto) {
+//   [ paymentReqDto 안에 paymentKey/orderId/amount/yourSuccessUrl/yourFailUrl ]
+        Long institutionId = admin.getInstitution().getId();
+//        PaymentResDto paymentResDto = paymentService.requestTossPayment(admin,paymentReqDto);
+        LocalDateTime currentPayTime = LocalDateTime.now(); // 현재 날짜와 시간 가져오기
+        LocalDateTime NextPayTime = currentPayTime.plus(6, ChronoUnit.MONTHS); // 3개월 뒤의 날짜 계산
+//
+        paymentService.requestTossPayment6(institutionId,paymentReqDto,currentPayTime,NextPayTime);
+    }
+
+    @PostMapping("/toss12")
+    public void requestTossPayment12(@AuthenticationPrincipal Admin admin, @RequestBody @Valid PaymentReqDto paymentReqDto) {
+//   [ paymentReqDto 안에 paymentKey/orderId/amount/yourSuccessUrl/yourFailUrl ]
+        Long institutionId = admin.getInstitution().getId();
+//        PaymentResDto paymentResDto = paymentService.requestTossPayment(admin,paymentReqDto);
+        LocalDateTime currentPayTime = LocalDateTime.now(); // 현재 날짜와 시간 가져오기
+        LocalDateTime NextPayTime = currentPayTime.plus(12, ChronoUnit.MONTHS); // 3개월 뒤의 날짜 계산
+//
+        paymentService.requestTossPayment12(institutionId,paymentReqDto,currentPayTime,NextPayTime);
+//        return ResponseEntity.ok().body(new SingleResponse<>(paymentResDto));//!!!
+
+    }
+}
+
+
+//
+//    @GetMapping("/toss/success")
+//    public ResponseEntity tossPaymentSuccess(
+//            @RequestParam String paymentKey,
+//            @RequestParam String orderId,
+//            @RequestParam Long amount,
+//            @AuthenticationPrincipal Admin admin
+//    ) {
+//
+//        return ResponseEntity.ok().body(new SingleResponse<>(paymentService.tossPaymentSuccess(paymentKey, orderId, amount,admin)));
+//    }
+//
+//    @GetMapping("/toss/fail")
+//    public ResponseEntity tossPaymentFail(
+//            @RequestParam String code,
+//            @RequestParam String message,
+//            @RequestParam String orderId
+//    )
+//    {
+//        paymentService.tossPaymentFail(code, message, orderId);
+//        return ResponseEntity.ok().body(new SingleResponse<>(
+//                PaymentFailDto.builder()
+//                        .errorCode(code)
+//                        .errorMessage(message)
+//                        .orderId(orderId)
+//                        .build()
+//        ));
+//    }
+=======
 
     //
     //    @GetMapping("/toss/success")
@@ -136,6 +208,7 @@
     //                        .build()
     //        ));
     //    }
+>>>>>>> 52f43343cd5d8cfb80b0b881ba4a7b43e47f692b
 
 
 

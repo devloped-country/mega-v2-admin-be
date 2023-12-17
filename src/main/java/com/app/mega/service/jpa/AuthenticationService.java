@@ -14,6 +14,7 @@ import com.app.mega.dto.response.admin.ManagerAndCourseResponse;
 import com.app.mega.entity.Admin;
 import com.app.mega.entity.Course;
 import com.app.mega.entity.Institution;
+import com.app.mega.entity.Payment;
 import com.app.mega.repository.AdminRepository;
 import com.app.mega.repository.CourseRepository;
 import com.app.mega.repository.InstitutionRepository;
@@ -26,11 +27,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -135,28 +140,56 @@ public class AuthenticationService {
                 .data(null)
                 .build());
     }
-
     //로그인
     @Transactional
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+    public AuthenticationResponse authenticate(AuthenticationRequest request){
         // 인증 시도. 인증에 실패하면 AuthenticationError 반환됨
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
                 request.getEmail(),
                 request.getPassword()
-            )
-        );
+                        )
+                    );
 
-        // 인증 성공 시
+         // 인증 성공 시
         Admin admin = adminRepository.findByEmail(request.getEmail());
         String jwtToken = jwtService.generateToken(admin);
+
+                    List<Payment> paymentList = admin.getInstitution().getPayment();
+                    LocalDate lastPayTime = null; // 가장 마지막 LocalDate 값을 저장할 변수 초기화
+
+                    for (Payment payment : paymentList) {
+                        LocalDateTime getNextPayTime = payment.getNextPayTime();
+                        LocalDate paymentNextDate = getNextPayTime.toLocalDate(); // LocalDateTime을 LocalDate로 변환
+
+                        if (lastPayTime == null || paymentNextDate.isAfter(lastPayTime)) {
+                        lastPayTime = paymentNextDate;
+                        }
+                    }
+                     System.out.println(lastPayTime);
+
+                    LocalDateTime nowDateTime = LocalDateTime.now();
+                    LocalDate now = nowDateTime.toLocalDate();
+                    long n = ChronoUnit.DAYS.between(now, lastPayTime);
+
+
+                    if (n <= 7) {
+                        ArrayList<String> to = new ArrayList<>();
+                        to.add(admin.getEmail());
+                        String subject = "MEGA V2 구독갱신일 메일입니다.";
+                        String content = "어플 구독갱신 " + n + "일전 입니다 ";
+                        emailSender.send(subject, content, to);
+
+                    }
 
         return AuthenticationResponse.builder()
             .token(jwtToken)
             .isManager(admin.getIsManager())
-                .id(admin.getId())
+            .id(admin.getId())
             .build();
+
     }
+
 
     //기관이 과정 등록
     @Transactional

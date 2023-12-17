@@ -15,11 +15,15 @@ import java.util.stream.Collectors;
 
 @Mapper
 public interface PaymentMapper {
+
+    PaymentResDto requestTossPayment0();
     PaymentResDto requestTossPayment3();
     PaymentResDto requestTossPayment6();
     PaymentResDto requestTossPayment12();
 
 //    List<AttendanceResponse> getAttendanceListByUserIdAndMonth(Long userId, int month);
+
+    void requestTossPayment0(@Param("institutionId") Long institutionId,@Param("paymentReqDto") PaymentReqDto paymentReqDto, LocalDateTime currentPayTime,LocalDateTime NextPayTime);
     void requestTossPayment3(@Param("institutionId") Long institutionId,@Param("paymentReqDto") PaymentReqDto paymentReqDto, LocalDateTime currentPayTime,LocalDateTime NextPayTime);
     void requestTossPayment6(@Param("institutionId") Long institutionId,@Param("paymentReqDto") PaymentReqDto paymentReqDto, LocalDateTime currentPayTime,LocalDateTime NextPayTime);
     void requestTossPayment12(@Param("institutionId") Long institutionId,@Param("paymentReqDto") PaymentReqDto paymentReqDto, LocalDateTime currentPayTime,LocalDateTime NextPayTime);

@@ -7,20 +7,24 @@
 <!--    <select id="paymentResDto" resultType="com.app.mega.dto.response.PaymentResDto" >-->
 <!--        INSERT INTO payment SET institution_id = #{admin.id}, amount = #{paymentReqDto.paymentKey}, order_id = #{paymentReqDto.orderId}, amount =  #{paymentReqDto.amount} ,-->
 <!--    </select>-->
-
-    <insert id="requestTossPayment3" >
+    <insert id="requestTossPayment0" >
         INSERT INTO payment (institution_id ,payment_key ,amount ,order_id ,current_pay_time, next_pay_time)
         VALUES (#{institutionId}, #{paymentReqDto.paymentKey} ,#{paymentReqDto.amount}, #{paymentReqDto.orderId}, #{currentPayTime}, #{NextPayTime})
+    </insert>
+
+    <insert id="requestTossPayment3" >
+        INSERT INTO payment (institution_id ,payment_key ,amount ,order_id ,current_pay_time, next_pay_time, pay_level)
+        VALUES (#{institutionId}, #{paymentReqDto.paymentKey} ,#{paymentReqDto.amount}, #{paymentReqDto.orderId}, #{currentPayTime}, #{NextPayTime}, 0)
     </insert>
 
     <insert id="requestTossPayment6" >
-        INSERT INTO payment (institution_id ,payment_key ,amount ,order_id ,current_pay_time, next_pay_time)
-        VALUES (#{institutionId}, #{paymentReqDto.paymentKey} ,#{paymentReqDto.amount}, #{paymentReqDto.orderId}, #{currentPayTime}, #{NextPayTime})
+        INSERT INTO payment (institution_id ,payment_key ,amount ,order_id ,current_pay_time, next_pay_time, pay_level)
+        VALUES (#{institutionId}, #{paymentReqDto.paymentKey} ,#{paymentReqDto.amount}, #{paymentReqDto.orderId}, #{currentPayTime}, #{NextPayTime}, 1)
     </insert>
 
     <insert id="requestTossPayment12" >
-        INSERT INTO payment (institution_id ,payment_key ,amount ,order_id ,current_pay_time, next_pay_time)
-        VALUES (#{institutionId}, #{paymentReqDto.paymentKey} ,#{paymentReqDto.amount}, #{paymentReqDto.orderId}, #{currentPayTime}, #{NextPayTime})
+        INSERT INTO payment (institution_id ,payment_key ,amount ,order_id ,current_pay_time, next_pay_time, pay_level)
+        VALUES (#{institutionId}, #{paymentReqDto.paymentKey} ,#{paymentReqDto.amount}, #{paymentReqDto.orderId}, #{currentPayTime}, #{NextPayTime}, 2)
     </insert>
 
 </mapper>
