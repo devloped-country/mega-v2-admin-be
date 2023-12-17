@@ -16,9 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -102,6 +100,7 @@ public class NoteService {
                     .build();
             notesInfo.add(sentNoteResponse);
         }
+        Collections.sort(notesInfo, Comparator.comparing(SendedNoteResponse::getTime).reversed());
         return notesInfo;
     }
 
@@ -122,6 +121,7 @@ public class NoteService {
                     .build();
             notesInfo.add(receivedNoteResponse);
         }
+        Collections.sort(notesInfo, Comparator.comparing(ReceivedNoteResponse::getTime).reversed());
         return notesInfo;
     }
 
@@ -132,7 +132,7 @@ public class NoteService {
         for(NoteReceive trashNote : trashNotes) {
             NoteSend note = trashNote.getNoteSend();
             TrashNoteResponse trashNoteResponse = TrashNoteResponse.builder()
-                .id(trashNote.getId())
+                .id(note.getId())
                 .title(note.getTitle())
                 .content(note.getContent())
                 .from(note.getUser().getName())
@@ -145,7 +145,8 @@ public class NoteService {
     //수신쪽지 삭제 (휴지통 넣기)
     public List<ReceivedNoteResponse> deleteReceivedNotes (List<Long> noteIdsForDelete, Admin admin) {
         for(Long noteId : noteIdsForDelete) {
-            NoteReceive noteReceive = noteReceiveRepository.findById(noteId).get();
+            NoteSend noteSend = noteSendRepository.findById(noteId).get();
+            NoteReceive noteReceive = noteReceiveRepository.findByAdminAndNoteSend(admin, noteSend);
             noteReceive.setIsDeleted(true);
             noteReceiveRepository.save(noteReceive);
         }
@@ -155,7 +156,8 @@ public class NoteService {
     //수신쪽지 완전삭제
     public List<TrashNoteResponse> realDeleteReceivedNotes (List<Long> noteIdsForDelete, Admin admin) {
         for(Long noteId : noteIdsForDelete) {
-            NoteReceive noteReceive = noteReceiveRepository.findById(noteId).get();
+            NoteSend noteSend = noteSendRepository.findById(noteId).get();
+            NoteReceive noteReceive = noteReceiveRepository.findByAdminAndNoteSend(admin, noteSend);
             noteReceive.setIsRealDeleted(true);
             noteReceiveRepository.save(noteReceive);
         }
@@ -181,6 +183,7 @@ public class NoteService {
                 .content(noteSend.getContent())
                 .from(noteSend.getUser().getName())
                 .to(admin.getName())
+                .title(noteSend.getTitle())
                 .time(String.valueOf(noteSend.getCreateTime()))
                 .build();
     }
