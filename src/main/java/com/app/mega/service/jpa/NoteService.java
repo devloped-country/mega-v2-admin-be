@@ -177,14 +177,31 @@ public class NoteService {
     public NoteResponse readNote(Long id, Admin admin) {
         NoteSend noteSend = noteSendRepository.findById(id).get();
         NoteReceive noteReceive = noteReceiveRepository.findByAdminAndNoteSend(admin, noteSend);
-        noteReceive.setIsRead(true);
-        noteReceiveRepository.save(noteReceive);
-        return NoteResponse.builder()
-                .content(noteSend.getContent())
-                .from(noteSend.getUser().getName())
-                .to(admin.getName())
-                .title(noteSend.getTitle())
-                .time(String.valueOf(noteSend.getCreateTime()))
-                .build();
+        if(noteReceive != null) {
+            noteReceive.setIsRead(true);
+            noteReceiveRepository.save(noteReceive);
+
+            return NoteResponse.builder()
+                    .content(noteSend.getContent())
+                    .from(noteSend.getUser().getName())
+                    .to(Arrays.asList(admin.getName()))
+                    .title(noteSend.getTitle())
+                    .time(String.valueOf(noteSend.getCreateTime()))
+                    .build();
+        }
+        else {//발신쪽지확인
+            List<String> to = new ArrayList<>();
+            for(NoteReceive note:noteSend.getNoteReceives()) {
+                to.add(note.getUser().getName());
+            }
+            return NoteResponse.builder()
+                    .content(noteSend.getContent())
+                    .from(admin.getName())
+                    .to(to)
+                    .title(noteSend.getTitle())
+                    .time(String.valueOf(noteSend.getCreateTime()))
+                    .build();
+        }
     }
+
 }
