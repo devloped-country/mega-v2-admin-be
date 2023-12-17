@@ -173,7 +173,6 @@ public class AuthenticationService {
             LocalDate now = nowDateTime.toLocalDate();
             long n = ChronoUnit.DAYS.between(now, lastPayTime);
 
-
             if (n <= 7) {
                 ArrayList<String> to = new ArrayList<>();
                 to.add(admin.getEmail());
