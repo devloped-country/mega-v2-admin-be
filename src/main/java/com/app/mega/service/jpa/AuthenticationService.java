@@ -154,35 +154,34 @@ public class AuthenticationService {
          // 인증 성공 시
         Admin admin = adminRepository.findByEmail(request.getEmail());
         String jwtToken = jwtService.generateToken(admin);
-//
-//        List<Payment> paymentList = admin.getInstitution().getPayment();
-//        if(paymentList != null) {
-//            LocalDate lastPayTime = null; // 가장 마지막 LocalDate 값을 저장할 변수 초기화
-//
-//            for (Payment payment : paymentList) {
-//                LocalDateTime getNextPayTime = payment.getNextPayTime();
-//                LocalDate paymentNextDate = getNextPayTime.toLocalDate(); // LocalDateTime을 LocalDate로 변환
-//
-//                if (lastPayTime == null || paymentNextDate.isAfter(lastPayTime)) {
-//                    lastPayTime = paymentNextDate;
-//                }
-//            }
-//            System.out.println(lastPayTime);
-//
-//            LocalDateTime nowDateTime = LocalDateTime.now();
-//            LocalDate now = nowDateTime.toLocalDate();
-//            long n = ChronoUnit.DAYS.between(now, lastPayTime);
-//
-//
-//            if (n <= 7) {
-//                ArrayList<String> to = new ArrayList<>();
-//                to.add(admin.getEmail());
-//                String subject = "MEGA V2 구독갱신일 메일입니다.";
-//                String content = "어플 구독갱신 " + n + "일전 입니다 ";
-//                emailSender.send(subject, content, to);
-//
-//            }
-//        }
+
+        List<Payment> paymentList = admin.getInstitution().getPayment();
+        if(paymentList != null) {
+            LocalDate lastPayTime = null; // 가장 마지막 LocalDate 값을 저장할 변수 초기화
+
+            for (Payment payment : paymentList) {
+                LocalDateTime getNextPayTime = payment.getNextPayTime();
+                LocalDate paymentNextDate = getNextPayTime.toLocalDate(); // LocalDateTime을 LocalDate로 변환
+
+                if (lastPayTime == null || paymentNextDate.isAfter(lastPayTime)) {
+                    lastPayTime = paymentNextDate;
+                }
+            }
+            System.out.println(lastPayTime);
+
+            LocalDateTime nowDateTime = LocalDateTime.now();
+            LocalDate now = nowDateTime.toLocalDate();
+            long n = ChronoUnit.DAYS.between(now, lastPayTime);
+
+            if (n <= 7) {
+                ArrayList<String> to = new ArrayList<>();
+                to.add(admin.getEmail());
+                String subject = "MEGA V2 구독갱신일 메일입니다.";
+                String content = "어플 구독갱신 " + n + "일전 입니다 ";
+                emailSender.send(subject, content, to);
+
+            }
+        }
             return AuthenticationResponse.builder()
                     .token(jwtToken)
                     .isManager(admin.getIsManager())
