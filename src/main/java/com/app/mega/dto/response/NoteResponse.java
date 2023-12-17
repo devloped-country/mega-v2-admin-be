@@ -2,6 +2,8 @@ package com.app.mega.dto.response;
 
 import lombok.*;
 
+import java.util.List;
+
 @Builder
 @Data
 @AllArgsConstructor
@@ -10,7 +12,7 @@ import lombok.*;
 public class NoteResponse {
     private String content;
     private String from;
-    private String to;
+    private List<String> to;
     private String time;
     private String title;
 }

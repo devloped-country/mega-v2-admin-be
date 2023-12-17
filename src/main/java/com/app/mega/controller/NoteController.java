@@ -74,6 +74,7 @@ public class NoteController {
 
     @GetMapping("/{id}")
     public NoteResponse readNote (@PathVariable Long id, @AuthenticationPrincipal Admin admin) {
-        return noteService.readNote(id, admin);
+            return noteService.readNote(id, admin);
+
     }
 }
