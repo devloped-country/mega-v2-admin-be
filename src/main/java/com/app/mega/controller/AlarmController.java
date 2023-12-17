@@ -13,6 +13,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/alarm")
+//@CrossOrigin(origins = "*")
 public class AlarmController {
     AlarmService alarmService;
 

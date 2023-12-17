@@ -33,14 +33,13 @@ import java.util.stream.Collectors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-@CrossOrigin(origins = "http://localhost:3000")
-
 @Slf4j
 @Getter
 @Setter
 @RestController
 @RequestMapping("/api/attendance")
 @RequiredArgsConstructor
+//@CrossOrigin(origins = "*")
 public class AttendanceController {
 
         private final AttendanceService attendanceService;
@@ -220,7 +219,8 @@ public class AttendanceController {
         //✅✅승인버튼누를시\\
         @PutMapping("/AttendanceChangeYesRequest")
         public void AttendanceChangeYesRequest(
-                @AuthenticationPrincipal Admin admin, @RequestBody AttendanceChangeYesRequest attendanceChangeYesRequest  ) {
+                @AuthenticationPrincipal Admin admin, @RequestBody AttendanceChangeYesRequest attendanceChangeYesRequest) {
+                System.out.println(attendanceChangeYesRequest);
                 //+ Attendance의 status의 값을 Appliance의status으로 변경
                 attendanceService.AttendanceAllowChangeYes
                         (attendanceChangeYesRequest.getAttendanceId(),//목록의 appliance안의 attendancId랑

@@ -19,4 +19,5 @@ public class CurriculumRequest {
     private String startDate;
     private String endDate;
     private List<String> contents;
+    private Integer orderList;
 }

@@ -3,12 +3,10 @@ package com.app.mega.controller;
 import com.app.mega.common.CommonResponse;
 import com.app.mega.dto.request.CurriculumRequest;
 import com.app.mega.dto.response.CurriculumResponse;
-import com.app.mega.entity.Admin;
 import com.app.mega.service.mybatis.CurriculumService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +14,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/curriculum")
+//@CrossOrigin(origins = "*")
 public class CurriculumController {
     private final CurriculumService curriculumService;
 
@@ -94,5 +93,8 @@ public class CurriculumController {
     }
 
     //커리큘럼 목록 순서 Update
-//    @PutMapping("/order")
+    @PutMapping("/order")
+    public void editCurriculumList(@RequestBody CurriculumRequest request) throws Exception {
+        curriculumService.editCurriculumList(request);
+    }
 }

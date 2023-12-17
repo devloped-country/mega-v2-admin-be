@@ -22,6 +22,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/note")
+//@CrossOrigin(origins = "*")
 public class NoteController {
     private final NoteService noteService;
 
@@ -73,4 +74,5 @@ public class NoteController {
     public List<SendedNoteResponse> realDeleteSendedNotes (@RequestBody NoteIdRequest request, @AuthenticationPrincipal Admin admin) {
         return noteService.realDeleteSendedNotes(request.getSelectedNoteId(), admin);
     }
+
 }
