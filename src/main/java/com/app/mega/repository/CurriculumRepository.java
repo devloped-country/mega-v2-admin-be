@@ -19,7 +19,7 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Long> {
 
     List<Curriculum> findAllByCourse(Course course);
 
-    List<Curriculum> findAllBycourse_id(Long id);
+    List<Curriculum> findAllBycourse(Course course);
 
     Curriculum findByCourseIdAndId(Long id, Long curriculumId);
 

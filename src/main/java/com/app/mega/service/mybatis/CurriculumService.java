@@ -93,7 +93,7 @@ public class CurriculumService {
             //curriculumResponse.setListContent(detailSubjectContent);
 //        }
 
-        List<Curriculum> curriculumList = curriculumRepository.findAllBycourse_id(course);
+        List<Curriculum> curriculumList = curriculumRepository.findAllByCourse(courseRepository.findById(course).get());
         List<CurriculumResponse> curriculumResponseList = new ArrayList<>();
 
         for(Curriculum curriculum : curriculumList){
@@ -197,7 +197,7 @@ public class CurriculumService {
     @Transactional
     public void editCurriculumList(CurriculumRequest request) {
         int totalCount = curriculumRepository.prevCurriculumCount(request.getCourseId());   //커리큘럼 갯수
-        List<Curriculum> curriculums = curriculumRepository.findAllBycourse_id(request.getCourseId());  //커리큘럼 리스트 불러오기
+        List<Curriculum> curriculums = curriculumRepository.findAllByCourse(courseRepository.findById(request.getCourseId()).get());  //커리큘럼 리스트 불러오기
 
         for(int listNumber = 0; listNumber < totalCount; listNumber++) {
             Curriculum curriculum = curriculums.get(listNumber);    //커리큘럼 n번째 커리큘럼 가져오기
