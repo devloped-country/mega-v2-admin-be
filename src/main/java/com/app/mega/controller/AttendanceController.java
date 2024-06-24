@@ -86,7 +86,6 @@ public class AttendanceController {
                         Long attendanceId =user.getId();
                         LocalDateTime nineAM = LocalDateTime.of(LocalDate.now(), LocalTime.of(9, 0));
                         LocalDateTime fivePM = LocalDateTime.of(LocalDate.now(), LocalTime.of(17, 0));
-////            LocalTime currentTime = LocalTime.now();//여기서 해당유저의 시작값,끝값을 가져와서 아래 현제시간에 넣긱ㄱ
 
                         AttendanceResponse attendanceResponse = attendanceService.getAttendanceResponse(attendanceId);
                         LocalDateTime startTime =attendanceResponse.getStartTime();
@@ -103,39 +102,25 @@ public class AttendanceController {
                                 changeStatus = 4; // Default status or handle other cases
                         }
                         //ㄴ>>여기부분을 조금만 로직수정하면 될듯//
-//            AttendanceRequest attendanceRequest = new AttendanceRequest(user.getId(), attendanceResponse.getStartTime(), attendanceResponse.getEndTime(), changeStatus, LocalDate.now());
                         attendanceService.
                                 saveChangeAttendanceStatus(user.getId(),changeStatus);
                 }
         }
 
 
-        //✅✅[과정명,번호 가져오기]
+
         @GetMapping("/getCourse")
         public List<CourseResponse> getCourse(@AuthenticationPrincipal Admin admin ) {
 
 
                 return attendanceService.getCourse();
         }
-        //=>admin , 기관ID에 맞는 교육과정들 가져옴
 
-//-------------------------------------------------------------------
-        //✅✅[[해당 교육과정 => 유저전체의 개인정보들(유저번호,이름,프로필) ]]
-
-        //-> id.name,imageUrl,phone
-//        @GetMapping("/getUserListByCourse")
-//        public List<UserResponse> getUserListByCourse
-//        (@AuthenticationPrincipal Admin admin) {
-//                return attendanceService.getUserListByCourse(admin.getInstitution());
-//        }
 
         @GetMapping("/{courseId}/getUserListByCourse")
         public List<UserResponse> getUserListByCourse(@PathVariable Long courseId)
         {return attendanceService.getUserListByCourse(courseId);}
-//-------------------------------------------------------------------
 
-        //    [[유저전체의 출석+프로필정보(유저번호,이름,프로필,출석정보)들 가져오기
-//     ✅✅하고 +로 각출석상태 총합까지 만들어서 반환하기]]
         @GetMapping("/{courseId}/total")  //total
 
         public List<AttendanceProfileSum> attendanceList(@PathVariable Long courseId) {
@@ -165,7 +150,7 @@ public class AttendanceController {
 
                 return profileSumList;
         }
-//✅✅
+
         @GetMapping("/{id}/totalById")
         public List<AttendanceProfileSum> TotalById(@PathVariable("id") Long id) {
                 List<UserResponse> userList = attendanceService.getUserListById(id);
@@ -194,15 +179,7 @@ public class AttendanceController {
 
                 return profileSumList;
         }
-//                                          [[인쇄버튼 만들기?????]]
-//    @GetMapping("/print")
-//    public List<Attendance> print() {
-//        return attendanceService.print();
-//    }
 
-///=============================================================================
-
-        //✅✅
         @GetMapping("/{id}/getAppliancesById")
         public List<ApplianceResponse> getAppliancesById(@PathVariable("id") Long id) {
                 //return AttendanceRepository.findById(id).orElse(null);
@@ -210,12 +187,6 @@ public class AttendanceController {
                 return attendanceService.getAppliancesById(id);
         }
 
-///=============================================================================
-        // [[교육생의 신청허가에따른 status반영]]
-        //  [[승인버튼 누르면 일어나는 허가 과정]]
-        //바로위 getAppliancesById 의 공가신청 목록중에서 선택한 항목의 데이터를 요청에 담아서
-
-        //✅✅승인버튼누를시\\
         @PutMapping("/AttendanceChangeYesRequest")
         public void AttendanceChangeYesRequest(
                 @AuthenticationPrincipal Admin admin, @RequestBody AttendanceChangeYesRequest attendanceChangeYesRequest) {
@@ -230,7 +201,7 @@ public class AttendanceController {
                 attendanceService.ApplianceAllowChangeYse(attendanceChangeYesRequest.getAttendanceId(),admin.getId());
         }
 
-        //✅✅미승인버튼누를시\\
+
         @PutMapping("/AttendanceChangeNoRequest")
         public void AttendanceChangeNoRequest(
                 @AuthenticationPrincipal Admin admin, @RequestBody AttendanceChangeNoRequest attendanceChangeNoRequest  ) {
@@ -238,55 +209,14 @@ public class AttendanceController {
                 attendanceService.AttendanceChangeNoRequest
                         (attendanceChangeNoRequest.getAttendanceId(),admin.getId());
         }
-///=============================================================================
-        //    @GetMapping("/{id}/appliance")
-//    public ApplianceResponse viewApplianceForAttendance(@PathVariable("id") @Valid Long id) {
-//        //유저id, applianceRequest->(reason,applianceDate,status)//유저8번으로 테스트
-//        //!!!!!!!!!!!근데 이거 요청을"applianceDate": "2023-01-01",형식으로 보내져야한다!!!!!!!!!!!
-//        // 출석정보 테이블의 id를 찾기 위해 ( 교육생id/공가신청의 날짜) 를 통해서 해당출결id를 찾음
-//        Long attendanceId = attendanceService.getAttendanceId(id);
-//        // 공가신청내용의DTO, url의 교육생 id, 찾은 출석 테이블 id를 Appliance에 저장 한다
-//        attendanceService.createApplianceForAttendance(id);
-////    }
-//        @PostMapping("/appliance")
-//        public void createApplianceForAttendance(@AuthenticationPrincipal Admin admin, @RequestBody ApplianceRequest applianceRequest) {
-//                //유저id, applianceRequest->(reason,applianceDate,status)//유저8번으로 테스트
-//                //!!!!!!!!!!!근데 이거 요청을"applianceDate": "2023-01-01",형식으로 보내져야한다!!!!!!!!!!!
-//                // 출석정보 테이블의 id를 찾기 위해 ( 교육생id/공가신청의 날짜) 를 통해서 해당출결id를 찾음
-//                Long attendanceId = attendanceService.getAttendanceId(admin.getId(), applianceRequest.getApplianceDate());
-//
-//
-//                // 공가신청내용의DTO, url의 교육생 id, 찾은 출석 테이블 id를 Appliance에 저장 한다
-//                attendanceService.createApplianceForAttendance(admin.getId(), applianceRequest, attendanceId);
-//
-//        }
-///=============================================================================
-        //            [[유저한명의 정보들 중 '일정페이지'
-        //            (프로필,공가신청내역(날짜,원하는상태등등))들 가져오기]]
-        //===========????   승인,대기중,미승인 상태표시 어캐  ????==========
-        //-> id.name,imageUrl,attendances
-//    @GetMapping("/{id}/getAppliancesById")
-//    public List<ApplianceResponse> getAppliancesById(@PathVariable("id") Long id) {
-//        //return AttendanceRepository.findById(id).orElse(null);
-//         //return (List<ApplianceResponse>) attendanceService.getAppliancesById(id);
-//        return attendanceService.getAppliancesById(id);
-//    }
-///=============================================================================
-        //✅✅
-        //            [[유저한명의 정보들 중 '정보'
-        //            (...)들 가져오기]]
-        //-> id.name,imageUrl,attendances//
-        //코스정보추가
-        //--유저 네임이랑 코스만 만들어주는 api만들자
-        //코스아이디 는 보네줌
+
         @GetMapping("/{id}/userInfo")
         public UserResponse getUserInfo(@PathVariable("id") Long id) {
                 //return AttendanceRepository.findById(id).orElse(null);
                 // => 리퍼지터리와 컨트롤러가 만날일 없이 서비스가 조회 요청을 처리하도록 수정
                 return attendanceService.getUserInfo(id);
         }
-//=============================================================================
-        //✅✅
+
         @GetMapping("/{id}/attendance")
         public List<AttendanceResponse> getAttendanceById(@PathVariable("id") Long id) {
                 return attendanceService.getAttendanceById(id);

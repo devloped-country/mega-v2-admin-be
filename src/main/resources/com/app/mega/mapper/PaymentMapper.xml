@@ -27,6 +27,7 @@
         VALUES (#{institutionId}, #{paymentReqDto.paymentKey} ,#{paymentReqDto.amount}, #{paymentReqDto.orderId}, #{currentPayTime}, #{NextPayTime})
     </insert>
 
+
     <select id="existsByOrderId" resultType="boolean">
         SELECT COUNT(*) > 0
         FROM payment

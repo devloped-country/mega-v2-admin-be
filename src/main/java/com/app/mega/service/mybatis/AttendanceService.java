@@ -121,9 +121,6 @@ public class AttendanceService {
         attendanceMapper.attendanceChangegAllow(attendanceResponse, changStatus);
     }
 
-//    public void AttendanceAllowChangeYes(Long attendanceId,Integer status) {
-//        attendanceMapper.AttendanceAllowChangeYes(attendanceId, status);
-//    }
     @Transactional
     public void AttendanceAllowChangeYes(Long attendanceId, Integer status) {
     attendanceMapper.AttendanceAllowChangeYes(attendanceId, status);

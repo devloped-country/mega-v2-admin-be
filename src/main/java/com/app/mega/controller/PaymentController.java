@@ -68,7 +68,6 @@
 
         @PostMapping("/toss3")
         public void requestTossPayment3(@AuthenticationPrincipal Admin admin, @RequestBody @Valid PaymentReqDto paymentReqDto) {
-            //   [ paymentReqDto 안에 paymentKey/orderId/amount/yourSuccessUrl/yourFailUrl ]
             Long institutionId = admin.getInstitution().getId();
             LocalDateTime currentPayTime = LocalDateTime.now(); // 현재 날짜와 시간 가져오기
             LocalDateTime NextPayTime = currentPayTime.plus(3, ChronoUnit.MONTHS); // 3개월 뒤의 날짜 계산
@@ -79,7 +78,6 @@
 
         @PostMapping("/toss6")
         public void requestTossPayment6(@AuthenticationPrincipal Admin admin, @RequestBody @Valid PaymentReqDto paymentReqDto) {
-            //   [ paymentReqDto 안에 paymentKey/orderId/amount/yourSuccessUrl/yourFailUrl ]
             Long institutionId = admin.getInstitution().getId();
             LocalDateTime currentPayTime = LocalDateTime.now(); // 현재 날짜와 시간 가져오기
             LocalDateTime NextPayTime = currentPayTime.plus(6, ChronoUnit.MONTHS); // 3개월 뒤의 날짜 계산
@@ -90,7 +88,6 @@
 
         @PostMapping("/toss12")
         public void requestTossPayment12(@AuthenticationPrincipal Admin admin, @RequestBody @Valid PaymentReqDto paymentReqDto) {
-            //   [ paymentReqDto 안에 paymentKey/orderId/amount/yourSuccessUrl/yourFailUrl ]
             Long institutionId = admin.getInstitution().getId();
             LocalDateTime currentPayTime = LocalDateTime.now(); // 현재 날짜와 시간 가져오기
             LocalDateTime NextPayTime = currentPayTime.plus(12, ChronoUnit.MONTHS); // 3개월 뒤의 날짜 계산

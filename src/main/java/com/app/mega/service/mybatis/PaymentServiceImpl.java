@@ -31,6 +31,7 @@ public class PaymentServiceImpl {
             throw new RuntimeException("결제를 실패하였습니다.", e);
         }
     }
+
     public void requestTossPayment6(Long institutionId, PaymentReqDto paymentReqDto, LocalDateTime currentPayTime, LocalDateTime nextPayTime) {
         try {
             if (paymentMapper.existsByOrderId(paymentReqDto.getOrderId())) {
@@ -55,11 +56,12 @@ public class PaymentServiceImpl {
             throw new RuntimeException("결제를 실패하였습니다.", e);
         }
     }
+
     private void sendPaymentCheckAndRetry(PaymentReqDto paymentReqDto) {
         int retryCount = 0;
         while (retryCount < 3) {
             try {
-                String subject = "결제 확인";
+                String subject = "결제 확인 ";
                 String content = "결제가 성공적으로 처리되었습니다. 결제 금액: " + paymentReqDto.getAmount();
                 List<String> toAddresses = Collections.singletonList(paymentReqDto.getEmail());
 
