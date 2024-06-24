@@ -19,7 +19,7 @@ public interface AttendanceMapper {
     UserResponse getUserInfo(Long id);
     void saveChangeAttendanceStatus(Long userId,Integer changeStatus);
     void AttendanceAllowChangeYes(Long attendanceId,Integer status);
-    void ApplianceAllowChangeYse(Long attendanceId,Long id);
+    void ApplianceAllowChangeYse(Long attendanceId);
 
     void AttendanceChangeNoRequest(Long attendanceId,Long id);
     List<AttendanceResponse> getAttendanceListByUserId(Long userId);

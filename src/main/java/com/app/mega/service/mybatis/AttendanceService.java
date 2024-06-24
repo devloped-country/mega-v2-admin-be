@@ -13,6 +13,7 @@ import com.app.mega.entity.User;
 import com.app.mega.mapper.AttendanceMapper;
 import com.app.mega.repository.CourseRepository;
 import com.app.mega.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
@@ -33,17 +34,10 @@ public class AttendanceService {
     private final UserRepository userRepository;
     private final AttendanceMapper attendanceMapper;
 
-//    public AttendanceService(AttendanceMapper attendanceMapper) {
-//        this.attendanceMapper = attendanceMapper;
-//    }
 
     public UserResponse getUserInfo(Long id){
         return attendanceMapper.getUserInfo(id);}
 
-
-    //public List<AttendanceResponse> getAttendanceListByUserIdAndMonth(Long userId, int month) {
-//    return attendanceMapper.getAttendanceListByUserIdAndMonth(userId, month);
-//}
     public List<AttendanceResponse> getAttendanceListByUserIdAndMonth(Long userId, int month) {
         List<AttendanceResponse> responses = attendanceMapper.getAttendanceListByUserIdAndMonth(userId, month);
         for (AttendanceResponse response : responses) {
@@ -127,12 +121,20 @@ public class AttendanceService {
         attendanceMapper.attendanceChangegAllow(attendanceResponse, changStatus);
     }
 
-    public void AttendanceAllowChangeYes(Long attendanceId,Integer status) {
-        attendanceMapper.AttendanceAllowChangeYes(attendanceId, status);
+//    public void AttendanceAllowChangeYes(Long attendanceId,Integer status) {
+//        attendanceMapper.AttendanceAllowChangeYes(attendanceId, status);
+//    }
+    @Transactional
+    public void AttendanceAllowChangeYes(Long attendanceId, Integer status) {
+    attendanceMapper.AttendanceAllowChangeYes(attendanceId, status);
+    attendanceMapper.ApplianceAllowChangeYse(attendanceId);
     }
 
+    //public void ApplianceAllowChangeYse(Long attendanceId,Long id) {
+    //    attendanceMapper.ApplianceAllowChangeYse(attendanceId, id);
+    //}
     public void ApplianceAllowChangeYse(Long attendanceId,Long id) {
-        attendanceMapper.ApplianceAllowChangeYse(attendanceId, id);
+        attendanceMapper.ApplianceAllowChangeYse(attendanceId);
     }
 
     public void AttendanceChangeNoRequest(Long attendanceId,Long id) {
@@ -154,33 +156,10 @@ public class AttendanceService {
         return attendanceMapper.getUserListByCourse(courseId);
     }
 
-//    public Map<Long, List<UserResponse>>  getUserListByCourse(Institution institution) {
-//        Map<Long, List<UserResponse>> userListByCourse = new HashMap<>();
-//        List<UserResponse> userResponseList = new ArrayList<>();
-//        List<Course> courseList = institution.getCourseList();
-//        for(Course course : courseList) {
-//            List<User> userList = userRepository.findAllByCourse(course);
-//            for(User user : userList) {
-//                UserResponse userResponse = UserResponse.builder()
-//                        .id(user.getId())
-//                        .name(user.getName())
-//                        .email(user.getEmail())
-//                        .phone(user.getPhone())
-//                        .isSigned(user.getIsIdentified())
-//                        .build();
-//                userResponseList.add(userResponse);
-//            }
-//            userListByCourse.put(course.getId(), userResponseList);
-//        }
-//        return userListByCourse;
-//    }
 
     public List<UserResponse> getUserListById(Long id) {
         return attendanceMapper.getUserListById(id);
     }
-//    public List<AttendanceResponse> attendanceList() {
-//        return attendanceMapper.attendanceList();
-//    }
 
     public List<ApplianceResponse> getAppliancesById(Long id) {
         System.out.println(attendanceMapper.getAppliancesById(id));

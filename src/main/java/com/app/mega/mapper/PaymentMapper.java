@@ -27,27 +27,6 @@ public interface PaymentMapper {
     void requestTossPayment3(@Param("institutionId") Long institutionId,@Param("paymentReqDto") PaymentReqDto paymentReqDto, LocalDateTime currentPayTime,LocalDateTime NextPayTime);
     void requestTossPayment6(@Param("institutionId") Long institutionId,@Param("paymentReqDto") PaymentReqDto paymentReqDto, LocalDateTime currentPayTime,LocalDateTime NextPayTime);
     void requestTossPayment12(@Param("institutionId") Long institutionId,@Param("paymentReqDto") PaymentReqDto paymentReqDto, LocalDateTime currentPayTime,LocalDateTime NextPayTime);
+    boolean existsByOrderId(@Param("orderId") String orderId);
 
-    //    void saveChangeAttendanceStatus(Long userId,Integer changeStatus);
-//    void AttendanceAllowChangeYes(Long attendanceId,Integer status);
-//    void ApplianceAllowChangeYse(Long attendanceId,Long id);
-//
-//    void AttendanceChangeNoRequest(Long attendanceId,Long id);
-
-//    default List<ChargingHistoryDto> chargingHistoryToChargingHistoryResponses(List<Payment> chargingHistories) {
-//        if (chargingHistories == null) {
-//            return null;
-//        }
-//
-//        return chargingHistories.stream()
-//                .map(chargingHistory -> {
-//                    return ChargingHistoryDto.builder()
-//                            .paymentHistoryId(chargingHistory.getPaymentId())
-//                            .amount(chargingHistory.getAmount())
-//                            .orderName(chargingHistory.getOrderName())
-////                            .createdAt(chargingHistory.getCreatedAt())
-//                            .isPaySuccessYN(chargingHistory.isPaySuccessYN())
-//                            .build();
-//                }).collect(Collectors.toList());
-//    }
 }

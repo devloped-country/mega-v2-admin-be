@@ -68,115 +68,34 @@
 
         @PostMapping("/toss3")
         public void requestTossPayment3(@AuthenticationPrincipal Admin admin, @RequestBody @Valid PaymentReqDto paymentReqDto) {
-    //   [ paymentReqDto 안에 paymentKey/orderId/amount/yourSuccessUrl/yourFailUrl ]
+            //   [ paymentReqDto 안에 paymentKey/orderId/amount/yourSuccessUrl/yourFailUrl ]
             Long institutionId = admin.getInstitution().getId();
-    //        PaymentResDto paymentResDto = paymentService.requestTossPayment(admin,paymentReqDto);
             LocalDateTime currentPayTime = LocalDateTime.now(); // 현재 날짜와 시간 가져오기
             LocalDateTime NextPayTime = currentPayTime.plus(3, ChronoUnit.MONTHS); // 3개월 뒤의 날짜 계산
-    //
+
             paymentService.requestTossPayment3(institutionId,paymentReqDto,currentPayTime,NextPayTime);
-    //        return ResponseEntity.ok().body(new SingleResponse<>(paymentResDto));//!!!
 
         }
 
         @PostMapping("/toss6")
         public void requestTossPayment6(@AuthenticationPrincipal Admin admin, @RequestBody @Valid PaymentReqDto paymentReqDto) {
-    //   [ paymentReqDto 안에 paymentKey/orderId/amount/yourSuccessUrl/yourFailUrl ]
+            //   [ paymentReqDto 안에 paymentKey/orderId/amount/yourSuccessUrl/yourFailUrl ]
             Long institutionId = admin.getInstitution().getId();
-    //        PaymentResDto paymentResDto = paymentService.requestTossPayment(admin,paymentReqDto);
             LocalDateTime currentPayTime = LocalDateTime.now(); // 현재 날짜와 시간 가져오기
             LocalDateTime NextPayTime = currentPayTime.plus(6, ChronoUnit.MONTHS); // 3개월 뒤의 날짜 계산
-    //
-            paymentService.requestTossPayment3(institutionId,paymentReqDto,currentPayTime,NextPayTime);
-    //        return ResponseEntity.ok().body(new SingleResponse<>(paymentResDto));//!!!
+
+            paymentService.requestTossPayment6(institutionId,paymentReqDto,currentPayTime,NextPayTime);
 
         }
 
         @PostMapping("/toss12")
         public void requestTossPayment12(@AuthenticationPrincipal Admin admin, @RequestBody @Valid PaymentReqDto paymentReqDto) {
-    //   [ paymentReqDto 안에 paymentKey/orderId/amount/yourSuccessUrl/yourFailUrl ]
+            //   [ paymentReqDto 안에 paymentKey/orderId/amount/yourSuccessUrl/yourFailUrl ]
             Long institutionId = admin.getInstitution().getId();
-    //        PaymentResDto paymentResDto = paymentService.requestTossPayment(admin,paymentReqDto);
             LocalDateTime currentPayTime = LocalDateTime.now(); // 현재 날짜와 시간 가져오기
             LocalDateTime NextPayTime = currentPayTime.plus(12, ChronoUnit.MONTHS); // 3개월 뒤의 날짜 계산
-    //
-            paymentService.requestTossPayment3(institutionId,paymentReqDto,currentPayTime,NextPayTime);
-    //        return ResponseEntity.ok().body(new SingleResponse<>(paymentResDto));//!!!
+
+            paymentService.requestTossPayment12(institutionId,paymentReqDto,currentPayTime,NextPayTime);
 
         }
     }
-
-
-//
-//    @GetMapping("/toss/success")
-//    public ResponseEntity tossPaymentSuccess(
-//            @RequestParam String paymentKey,
-//            @RequestParam String orderId,
-//            @RequestParam Long amount,
-//            @AuthenticationPrincipal Admin admin
-//    ) {
-//
-//        return ResponseEntity.ok().body(new SingleResponse<>(paymentService.tossPaymentSuccess(paymentKey, orderId, amount,admin)));
-//    }
-//
-//    @GetMapping("/toss/fail")
-//    public ResponseEntity tossPaymentFail(
-//            @RequestParam String code,
-//            @RequestParam String message,
-//            @RequestParam String orderId
-//    )
-//    {
-//        paymentService.tossPaymentFail(code, message, orderId);
-//        return ResponseEntity.ok().body(new SingleResponse<>(
-//                PaymentFailDto.builder()
-//                        .errorCode(code)
-//                        .errorMessage(message)
-//                        .orderId(orderId)
-//                        .build()
-//        ));
-//    }
-
-
-
-
-  //////////////////////////////////////////////////////////////////////////////////////////////////
-//
-////걀제 개월수 정해서 정해진 금액으로 결제요청하고 성공,실패 나뉘고 성공시 3가지값+개월수를 담은 paymentDTO를 만들어줌
-//    @PostMapping("/toss")
-//    public ResponseEntity requestTossPayment(@AuthenticationPrincipal Admin admin) {
-//        paymentService.requestTossPayment(PaymentDto paymentReqDto, )
-//
-//        Payment paymentEt = paymentReqDto.toEntity();
-//        /////////////////////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//        PaymentResDto paymentResDto = paymentService.requestTossPayment(paymentEt, user.getEmail()).toPaymentResDto();
-//        paymentResDto.setSuccessUrl(paymentReqDto.getYourSuccessUrl() == null ? tossPaymentConfig.getSuccessUrl() : paymentReqDto.getYourSuccessUrl());
-//        paymentResDto.setFailUrl(paymentReqDto.getYourFailUrl() == null ? tossPaymentConfig.getFailUrl() : paymentReqDto.getYourFailUrl());
-//        return ResponseEntity.ok().body(new SingleResponse<>(paymentResDto));
-//    }
-//
-////성공시 페이지 이동하면서 다시 요청보낼건데 3가지값이 담긴 객체와 해당 개월수+기관아이디 를 Payment테이블에 저장
-//    @GetMapping("/toss/success/{month}")
-//    public ResponseEntity tossPaymentSuccess(
-//            @PathVariable Long month,
-//            @RequestParam String paymentKey,
-//            @RequestParam String orderId,
-//            @RequestParam Long amount,
-//            @AuthenticationPrincipal Admin admin
-//    ) throws JSONException {
-//        return ResponseEntity.ok().body
-//                (new SingleResponse<>
-//                        (paymentService.tossPaymentSuccess
-//                                (paymentKey, orderId, amount, month, admin)));
-//    }
-//}
-//--------------------------------------------
-//    @PostMapping("/toss")
-//    public ResponseEntity requestTossPayment(@RequestBody @Valid PaymentDto paymentReqDto) {
-//        User user = new User();
-//        user.setName("메가");
-//        user.setEmail("sjh8924@naver.com");
-//        user.setPhone("01033802064");
-//        user.setIsIdentified(true);
-//        PaymentResDto paymentResDto = paymentService.RequestTossPayment(paymentReqDto.toEntity(), user.getName()).toPaymentResDto();
-//
-//-----------------------------------------------

@@ -1,71 +1,76 @@
 package com.app.mega.service.mybatis;
-
-import com.app.mega.dto.PaymentDto;
-import com.app.mega.dto.PaymentSuccessDto;
+import com.app.mega.config.util.ses.EmailSender;
 import com.app.mega.dto.request.PaymentReqDto;
-import com.app.mega.dto.response.PaymentAndMonth;
-import com.app.mega.dto.response.PaymentResDto;
-import com.app.mega.entity.Payment;
-import com.app.mega.config.TossPaymentConfig;
-import com.app.mega.entity.Admin;
-//import com.yata.backend.domain.member.service.MemberService;
-//import com.yata.backend.domain.payment.config.TossPaymentConfig;
-//import com.yata.backend.domain.payment.dto.PaymentSuccessDto;
-//import com.yata.backend.domain.payment.entity.Payment;
-//import com.yata.backend.domain.payment.repository.JpaPaymentRepository;
-//import com.yata.backend.global.exception.CustomLogicException;
-//import com.yata.backend.global.exception.ExceptionCode;
-
 import com.app.mega.mapper.PaymentMapper;
 import org.springframework.stereotype.Service;
-
-
-import com.app.mega.repository.JpaPaymentRepository;
 import jakarta.transaction.Transactional;
-
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 
 
 @Service
 @Transactional
 public class PaymentServiceImpl {
-
     private final PaymentMapper paymentMapper;
-    private final JpaPaymentRepository paymentRepository;
-    private final UserService userService;
-    private final TossPaymentConfig tossPaymentConfig;
+    private final EmailSender emailSender;
 
-    public PaymentServiceImpl(PaymentMapper paymentMapper, JpaPaymentRepository paymentRepository, UserService userService, TossPaymentConfig tossPaymentConfig) {
+    public PaymentServiceImpl(PaymentMapper paymentMapper, EmailSender emailSender) {
         this.paymentMapper = paymentMapper;
-        this.paymentRepository = paymentRepository;
-        this.userService = userService;
-        this.tossPaymentConfig = tossPaymentConfig;
-    }
-    public void requestTossPayment0(Long institutionId, PaymentReqDto paymentReqDto, LocalDateTime currentPayTime, LocalDateTime NextPayTime){
-        paymentMapper.requestTossPayment0(institutionId,paymentReqDto,currentPayTime,NextPayTime);
-    };
-
-    public void requestTossPayment3(Long institutionId, PaymentReqDto paymentReqDto, LocalDateTime currentPayTime, LocalDateTime NextPayTime){
-      paymentMapper.requestTossPayment3(institutionId,paymentReqDto,currentPayTime,NextPayTime);
-    };
-
-    public void requestTossPayment6(Long institutionId, PaymentReqDto paymentReqDto, LocalDateTime currentPayTime, LocalDateTime NextPayTime){
-        paymentMapper.requestTossPayment6(institutionId,paymentReqDto,currentPayTime,NextPayTime);
-    };
-
-    public void requestTossPayment12(Long institutionId, PaymentReqDto paymentReqDto, LocalDateTime currentPayTime, LocalDateTime NextPayTime){
-        paymentMapper.requestTossPayment12(institutionId,paymentReqDto,currentPayTime,NextPayTime);
-    };
-    public PaymentSuccessDto tossPaymentSuccess(String paymentKey, String orderId, Long amount, Admin admin) {
-
-        PaymentSuccessDto successDto = new PaymentSuccessDto();
-        successDto.setPaymentKey(paymentKey);
-        successDto.setOrderId(orderId);
-        successDto.setAmount(amount);
-        successDto.setInstitutionId(admin.getInstitution().getId());
-        return successDto;
+        this.emailSender = emailSender;
     }
 
+    public void requestTossPayment3(Long institutionId, PaymentReqDto paymentReqDto, LocalDateTime currentPayTime, LocalDateTime nextPayTime) {
+        try {
+            if (paymentMapper.existsByOrderId(paymentReqDto.getOrderId())) {
+                throw new RuntimeException("Duplicate orderId");
+            }
+            paymentMapper.requestTossPayment3(institutionId, paymentReqDto, currentPayTime, nextPayTime);
+            sendPaymentCheckAndRetry(paymentReqDto);
+        } catch (Exception e) {
+            throw new RuntimeException("결제를 실패하였습니다.", e);
+        }
+    }
+    public void requestTossPayment6(Long institutionId, PaymentReqDto paymentReqDto, LocalDateTime currentPayTime, LocalDateTime nextPayTime) {
+        try {
+            if (paymentMapper.existsByOrderId(paymentReqDto.getOrderId())) {
+                throw new RuntimeException("Duplicate orderId");
+            }
+            paymentMapper.requestTossPayment6(institutionId, paymentReqDto, currentPayTime, nextPayTime);
+            sendPaymentCheckAndRetry(paymentReqDto);
+        } catch (Exception e) {
+            throw new RuntimeException("결제를 실패하였습니다.", e);
+        }
+    }
+
+
+    public void requestTossPayment12(Long institutionId, PaymentReqDto paymentReqDto, LocalDateTime currentPayTime, LocalDateTime nextPayTime) {
+        try {
+            if (paymentMapper.existsByOrderId(paymentReqDto.getOrderId())) {
+                throw new RuntimeException("Duplicate orderId");
+            }
+            paymentMapper.requestTossPayment12(institutionId, paymentReqDto, currentPayTime, nextPayTime);
+            sendPaymentCheckAndRetry(paymentReqDto);
+        } catch (Exception e) {
+            throw new RuntimeException("결제를 실패하였습니다.", e);
+        }
+    }
+    private void sendPaymentCheckAndRetry(PaymentReqDto paymentReqDto) {
+        int retryCount = 0;
+        while (retryCount < 3) {
+            try {
+                String subject = "결제 확인";
+                String content = "결제가 성공적으로 처리되었습니다. 결제 금액: " + paymentReqDto.getAmount();
+                List<String> toAddresses = Collections.singletonList(paymentReqDto.getEmail());
+
+                emailSender.send(subject, content, toAddresses);
+                return; // 메일 전송 성공 시 종료
+            } catch (Exception e) {
+                retryCount++;
+                if (retryCount == 3) {
+                    throw new RuntimeException("Failed to send email after 3 attempts", e);
+                }
+            }
+        }
+    }
 }
-
-
